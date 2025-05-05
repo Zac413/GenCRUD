@@ -1,17 +1,24 @@
 package com.group.univ;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import com.group.univ.generator.PHPGenerator;
+import com.group.univ.model.Entity;
+import com.group.univ.parser.XMLParser;
+import org.w3c.dom.Document;
+
+import java.util.Map;
+
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
-
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        XMLParser xmlParser = new XMLParser();
+        PHPGenerator phpGenerator = new PHPGenerator();
+        try{
+            Document document = xmlParser.loadXmlDocument("src/main/resources/com/group/univ/xml/schema.xml");
+            Map<String, Entity> entities = xmlParser.parseEntities(document);
+            xmlParser.parseRelations(document, entities);
+            phpGenerator.generatePhpFiles(entities);
+        }catch (Exception e){
+            System.out.println("Erreur : " + e.getMessage());
         }
     }
 }
