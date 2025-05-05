@@ -31,7 +31,7 @@ public class test {
     }
 
     public static void main(String[] args) throws Exception {
-        Document doc = loadXmlDocument("Ressource/schema.xml");
+        Document doc = loadXmlDocument("src/main/resources/com/group/univ/xml/schema.xml");
         Map<String, Entity> entities = parseEntities(doc);
         parseRelations(doc, entities);
         generatePhpFiles(entities);
