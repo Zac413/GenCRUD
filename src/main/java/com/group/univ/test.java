@@ -105,9 +105,13 @@ public class test {
 
     // Génère les fichiers PHP pour chaque entité
     static void generatePhpFiles(Map<String, Entity> entities) throws IOException {
+        File generatedDir = new File("generated");
+        if (!generatedDir.exists()) {
+            generatedDir.mkdir();
+        }
         for (Entity entity : entities.values()) {
             String phpCode = generatePhpCode(entity);
-            try (PrintWriter out = new PrintWriter(entity.name + ".php")) {
+            try (PrintWriter out = new PrintWriter(new File(generatedDir, entity.name + ".php"))) {
                 out.print(phpCode);
             }
             System.out.println("Fichier généré : " + entity.name + ".php");
