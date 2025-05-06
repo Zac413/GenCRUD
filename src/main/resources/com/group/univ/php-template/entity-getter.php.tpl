@@ -1,5 +1,5 @@
 
-    public function get{{NAME}}(): ?{{TYPE}}
+    public function get{{NAME_CAMEL}}(): ?{{TYPE}}
     {
         return $this->{{NAME}};
     }

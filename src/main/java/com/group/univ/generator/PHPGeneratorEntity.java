@@ -23,6 +23,7 @@ public class PHPGeneratorEntity {
 
     public static String ENTITY_GETTER_PHP_TPL = PHP_TEMPLATE_PATH+"entity-getter.php.tpl";
     public static String ENTITY_SETTER_PHP_TPL = PHP_TEMPLATE_PATH+"entity-setter.php.tpl";
+    public static String ENTITY_LIST_ADD_REMOVE_PHP_TPL = PHP_TEMPLATE_PATH+"entity-add-remove-list.php.tpl";
 
 
 
@@ -49,6 +50,10 @@ public class PHPGeneratorEntity {
         // Header
         php.append(generateHeaderPhpCode(entity));
 
+
+        //TODO : constructor
+
+
         // Fields
         for (Field f : entity.getFields()) {
             php.append(generateFieldPhpCode(f));
@@ -67,7 +72,19 @@ public class PHPGeneratorEntity {
             }
         }
 
-        //TODO: Getters and Setters for relations
+        // Getters and Setters for relations
+        for (Relation r : entity.getRelations()) {
+            String type = "";
+            if(r.getType().equalsIgnoreCase("one-to-one")) {
+                type = Utils.mapType(r.getTo());
+            } else if (r.getType().equalsIgnoreCase("one-to-many")) {
+                type = "Collection";
+            }
+            php.append(generateGetterPhpCode(r.getTo(), type));
+            php.append(generateSetterPhpCode(r.getTo(), type));
+            php.append(generateListAddRemovePhpCode(r.getTo(), type));
+
+        }
 
 
         // Footer
@@ -153,6 +170,7 @@ public class PHPGeneratorEntity {
         }
 
         template = template.replace("{{NAME}}", name);
+        template = template.replace("{{NAME_CAMEL}}", Utils.toCamelCase(name));
         template = template.replace("{{TYPE}}", Utils.mapType(type));
         return template;
     }
@@ -166,6 +184,22 @@ public class PHPGeneratorEntity {
         }
 
         template = template.replace("{{NAME}}", name);
+        template = template.replace("{{NAME_CAMEL}}", Utils.toCamelCase(name));
+        template = template.replace("{{TYPE}}", Utils.mapType(type));
+        return template;
+    }
+
+    public String generateListAddRemovePhpCode(String name, String type) {
+        String template;
+        try {
+            template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_LIST_ADD_REMOVE_PHP_TPL)));
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
+        }
+
+        template = template.replace("{{NAME}}", name);
+        template = template.replace("{{name}}", Utils.lcfirst(name));
+        template = template.replace("{{NAME_CAMEL}}", Utils.toCamelCase(name));
         template = template.replace("{{TYPE}}", Utils.mapType(type));
         return template;
     }
