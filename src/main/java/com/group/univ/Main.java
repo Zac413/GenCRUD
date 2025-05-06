@@ -22,17 +22,13 @@ public class Main {
             Map<String, Entity> entities = xmlParser.parseEntities(document);
             xmlParser.parseRelations(document, entities);
             phpGeneratorEntity.generatePhpFiles(entities);
+            phpGeneratorController.generatePhpControllers(entities);
             phpGeneratorTemplates.generateTwigTemplates(entities);
             System.out.println("Génération terminée avec succès !");
 
         }catch (IOException e){
             System.out.println("Erreur d'entrée/sortie : " + e.getMessage());
-        }catch (NullPointerException e){
-            System.out.println("Erreur : " + e.getMessage());
-        }catch (IllegalArgumentException e){
-            System.out.println("Erreur : " + e.getMessage());
-            phpGeneratorController.generatePhpControllers(entities);
-        }catch (Exception e){
+        } catch (Exception e){
             System.out.println("Erreur : " + e.getMessage());
         }
     }
