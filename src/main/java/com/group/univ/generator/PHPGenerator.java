@@ -22,7 +22,8 @@ public class PHPGenerator {
     public static String ENTITY_RELATION_ONETOONE_PHP_TPL = PHP_TEMPLATE_PATH+"entity-relation-OneToOne.php.tpl";
     public static String ENTITY_RELATION_ONETOMANY_PHP_TPL = PHP_TEMPLATE_PATH+"entity-relation-OneToMany.php.tpl";
 
-    public static String ENTITY_GETTER_SETTER_PHP_TPL = PHP_TEMPLATE_PATH+"entity-getter-setter.php.tpl";
+    public static String ENTITY_GETTER_PHP_TPL = PHP_TEMPLATE_PATH+"entity-getter.php.tpl";
+    public static String ENTITY_SETTER_PHP_TPL = PHP_TEMPLATE_PATH+"entity-setter.php.tpl";
 
 
 
@@ -61,7 +62,10 @@ public class PHPGenerator {
 
         // Getters and Setters
         for (Field f : entity.getFields()) {
-            php.append(generateGetterSetterPhpCode(f.getName(), f.getType()));
+            php.append(generateGetterPhpCode(f.getName(), f.getType()));
+            if(!f.isId()){
+                php.append(generateSetterPhpCode(f.getName(), f.getType()));
+            }
         }
 
         //TODO: Getters and Setters for relations
@@ -141,10 +145,23 @@ public class PHPGenerator {
         return template;
     }
 
-    public String generateGetterSetterPhpCode(String name, String type) {
+    public String generateGetterPhpCode(String name, String type) {
         String template;
         try {
-            template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_GETTER_SETTER_PHP_TPL)));
+            template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_GETTER_PHP_TPL)));
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
+        }
+
+        template = template.replace("{{NAME}}", name);
+        template = template.replace("{{TYPE}}", Utils.mapType(type));
+        return template;
+    }
+
+    public String generateSetterPhpCode(String name, String type) {
+        String template;
+        try {
+            template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_SETTER_PHP_TPL)));
         } catch (IOException e) {
             throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
         }
