@@ -9,9 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
-import java.util.Stack;
 
-public class PHPGenerator {
+public class PHPGeneratorEntity {
 
     public static String PHP_TEMPLATE_PATH = "src/main/resources/com/group/univ/php-template/";
     public static String ENTITY_HEADER_PHP_TPL = PHP_TEMPLATE_PATH+"entity-header.php.tpl";
