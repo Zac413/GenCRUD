@@ -14,5 +14,5 @@ class {{ENTITY_NAME}}Controller extends AbstractController
         return $this->render('{{ENTITY_NAME_LOWER}}/index.html.twig', [
         'controller_name' => '{{ENTITY_NAME}}Controller',
         ]);
-    } //testtest
+    }
 }
