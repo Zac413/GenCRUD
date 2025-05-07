@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class PHPGeneratorRepository {
 
-    public static String PHP_TEMPLATE_PATH = "src/main/resources/com/group/univ/php-template/";
+    public static String PHP_TEMPLATE_PATH = "src/main/resources/com/group/univ/php-template/repository/";
     public static String REPOSITORY_TEMPLATE_PHP_TPL = PHP_TEMPLATE_PATH + "repository.php.tpl";
 
     // Génère les fichiers PHP pour chaque repository

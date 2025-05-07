@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class PHPGeneratorController {
 
-    public static String PHP_TEMPLATE_PATH = "src/main/resources/com/group/univ/php-template/";
+    public static String PHP_TEMPLATE_PATH = "src/main/resources/com/group/univ/php-template/controller/";
     public static String CONTROLLER_TEMPLATE_PHP_TPL = PHP_TEMPLATE_PATH + "controller.php.tpl";
 
     // Génère les fichiers PHP pour chaque contrôleur

@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class PHPGeneratorEntity {
 
-    public static String PHP_TEMPLATE_PATH = "src/main/resources/com/group/univ/php-template/";
+    public static String PHP_TEMPLATE_PATH = "src/main/resources/com/group/univ/php-template/entity/";
     public static String ENTITY_HEADER_PHP_TPL = PHP_TEMPLATE_PATH+"entity-header.php.tpl";
     public static String ENTITY_HEADER_ENTITY_PHP_TPL = PHP_TEMPLATE_PATH+"entity-header-entity.php.tpl";
     public static String ENTITY_HEADER_LIST_PHP_TPL = PHP_TEMPLATE_PATH+"entity-header-list.php.tpl";
