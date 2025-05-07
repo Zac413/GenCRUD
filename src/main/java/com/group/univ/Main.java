@@ -2,6 +2,7 @@ package com.group.univ;
 
 import com.group.univ.generator.PHPGeneratorController;
 import com.group.univ.generator.PHPGeneratorEntity;
+import com.group.univ.generator.PHPGeneratorRepository;
 import com.group.univ.generator.PHPGeneratorTemplates;
 import com.group.univ.model.Entity;
 import com.group.univ.parser.XMLParser;
@@ -17,6 +18,7 @@ public class Main {
         PHPGeneratorEntity phpGeneratorEntity = new PHPGeneratorEntity();
         PHPGeneratorTemplates phpGeneratorTemplates = new PHPGeneratorTemplates();
         PHPGeneratorController phpGeneratorController = new PHPGeneratorController();
+        PHPGeneratorRepository phpGeneratorRepositoriy = new PHPGeneratorRepository();
         try{
             Document document = xmlParser.loadXmlDocument("src/main/resources/com/group/univ/xml/schema.xml");
             Map<String, Entity> entities = xmlParser.parseEntities(document);
@@ -24,6 +26,7 @@ public class Main {
             phpGeneratorEntity.generatePhpFiles(entities);
             phpGeneratorController.generatePhpControllers(entities);
             phpGeneratorTemplates.generateTwigTemplates(entities);
+            phpGeneratorRepositoriy.generatePhpRepositories(entities);
             System.out.println("Génération terminée avec succès !");
 
         }catch (IOException e){
