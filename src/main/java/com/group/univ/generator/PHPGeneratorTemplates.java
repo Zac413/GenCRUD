@@ -23,11 +23,17 @@ public class PHPGeneratorTemplates {
         }
 
         for (Entity entity : entities.values()) {
+            String entityDirName = entity.getName().toLowerCase();
+            File entityDir = new File(templatesDir, entityDirName);
+            if (!entityDir.exists()) {
+                entityDir.mkdirs();
+            }
+
             // Page de création
-            writeTemplateToFile(templatesDir, generateCreateTemplate(entity), "create_" + entity.getName().toLowerCase() + ".html.twig");
+            writeTemplateToFile(entityDir, generateCreateTemplate(entity), "create.html.twig");
 
             // Page d'index
-            writeTemplateToFile(templatesDir, generateIndexTemplate(entity), "index_" + entity.getName().toLowerCase() + ".html.twig");
+            writeTemplateToFile(entityDir, generateIndexTemplate(entity), "index.html.twig");
         }
     }
 
@@ -35,7 +41,7 @@ public class PHPGeneratorTemplates {
         try (PrintWriter out = new PrintWriter(new File(dir, filename))) {
             out.print(content);
         }
-        System.out.println("Fichier Twig généré : " + filename);
+        System.out.println("Fichier Twig généré : " + new File(dir, filename).getPath());
     }
 
     public String generateCreateTemplate(Entity entity) {
