@@ -1,6 +1,7 @@
 package com.group.univ.generator;
 
 import com.group.univ.model.Entity;
+import com.group.univ.model.Field;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,7 @@ public class PHPGeneratorTemplates {
 
     public static final String TWIG_TEMPLATE_PATH = "src/main/resources/com/group/univ/php-template/forms/";
     public static final String TEMPLATE_CREATE_FORM = TWIG_TEMPLATE_PATH + "form-create.twig.tpl";
+    public static final String TEMPLATE_INDEX = TWIG_TEMPLATE_PATH + "form-index.twig.tpl";
 
     public void generateTwigTemplates(Map<String, Entity> entities) throws IOException {
         File templatesDir = new File("symfony/templates/");
@@ -21,25 +23,53 @@ public class PHPGeneratorTemplates {
         }
 
         for (Entity entity : entities.values()) {
-            String templateContent = generateCreateTemplate(entity);
-            String filename = "create_" + entity.getName().toLowerCase() + ".html.twig";
-            try (PrintWriter out = new PrintWriter(new File(templatesDir, filename))) {
-                out.print(templateContent);
-            }
-            System.out.println("Fichier Twig généré : " + filename);
+            // Page de création
+            writeTemplateToFile(templatesDir, generateCreateTemplate(entity), "create_" + entity.getName().toLowerCase() + ".html.twig");
+
+            // Page d'index
+            writeTemplateToFile(templatesDir, generateIndexTemplate(entity), "index_" + entity.getName().toLowerCase() + ".html.twig");
         }
     }
 
+    private void writeTemplateToFile(File dir, String content, String filename) throws IOException {
+        try (PrintWriter out = new PrintWriter(new File(dir, filename))) {
+            out.print(content);
+        }
+        System.out.println("Fichier Twig généré : " + filename);
+    }
+
     public String generateCreateTemplate(Entity entity) {
-        String template;
-        try {
-            template = new String(Files.readAllBytes(Paths.get(TEMPLATE_CREATE_FORM)));
-        } catch (IOException e) {
-            throw new RuntimeException("Erreur lors de la lecture du fichier template Twig : " + e.getMessage());
+        String template = readTemplateFile(TEMPLATE_CREATE_FORM);
+        return template
+                .replace("{{ENTITY_NAME}}", entity.getName())
+                .replace("{{ENTITY_NAME_LC}}", entity.getName().toLowerCase());
+    }
+
+    public String generateIndexTemplate(Entity entity) {
+        String template = readTemplateFile(TEMPLATE_INDEX);
+        StringBuilder headers = new StringBuilder();
+        StringBuilder rows = new StringBuilder();
+
+        for (Field field : entity.getFields()) {
+            if (!field.isId()) {
+                String fieldName = field.getName();
+                headers.append("<th>").append(fieldName).append("</th>\n");
+                rows.append("<td>{{ item.").append(fieldName).append(" }}</td>\n");
+            }
         }
 
         return template
-            .replace("{{ENTITY_NAME}}", entity.getName())
-            .replace("{{ENTITY_NAME_LC}}", entity.getName().toLowerCase());
+                .replace("{{ENTITY_NAME}}", entity.getName())
+                .replace("{{ENTITY_NAME_LC}}", entity.getName().toLowerCase())
+                .replace("{{TABLE_HEADERS}}", headers.toString().trim())
+                .replace("{{TABLE_ROWS}}", rows.toString().trim());
+    }
+
+    private String readTemplateFile(String path) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(path)));
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lecture template : " + path + " - " + e.getMessage());
+        }
     }
 }

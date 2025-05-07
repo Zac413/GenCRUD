@@ -1,0 +1,1 @@
+->add('{{FIELD_NAME}}', {{FIELD_TYPE}}::class)
