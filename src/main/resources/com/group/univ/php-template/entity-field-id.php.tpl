@@ -4,4 +4,4 @@
     * @ORM\GeneratedValue
     * @ORM\Column(type="integer")
     */
-    private ${{FIELD_NAME}};
+    private ?{{FIELD_TYPE}} ${{FIELD_NAME}};

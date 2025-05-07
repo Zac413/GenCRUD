@@ -2,4 +2,4 @@
     /**
     * @ORM\OneToMany(targetEntity="{{RELATION_TO}}", mappedBy="{{ENTITY_NAME}}")
     */
-    private ${{RELATION_to}}s;
+    private ?{{FIELD_TYPE}} ${{RELATION_to}}s;

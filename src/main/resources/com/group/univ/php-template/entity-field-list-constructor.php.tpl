@@ -1,2 +1,0 @@
-
-    $this->produits = new ArrayCollection();
