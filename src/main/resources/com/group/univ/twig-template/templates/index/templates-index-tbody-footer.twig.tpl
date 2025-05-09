@@ -1,3 +1,5 @@
 
         </tr>
-    </thead>
+    {% endfor %}
+    </tbody>
+</table>
