@@ -13,10 +13,10 @@ public class Main {
     public static void main(String[] args) {
         XMLParser xmlParser = new XMLParser();
         PHPGeneratorEntity phpGeneratorEntity = new PHPGeneratorEntity();
-        PHPGeneratorTemplates phpGeneratorTemplates = new PHPGeneratorTemplates();
         PHPGeneratorController phpGeneratorController = new PHPGeneratorController();
         PHPGeneratorRepository phpGeneratorRepository = new PHPGeneratorRepository();
         PHPGeneratorForms phpGeneratorForms = new PHPGeneratorForms();
+        PHPGeneratorTemplates phpGeneratorTemplates = new PHPGeneratorTemplates();
         try{
             Document document = xmlParser.loadXmlDocument("src/main/resources/com/group/univ/xml/schema.xml");
             Map<String, Entity> entities = xmlParser.parseEntities(document);

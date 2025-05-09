@@ -6,40 +6,40 @@ import com.group.univ.utils.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 
 public class PHPGeneratorController {
 
-    public static String PHP_TEMPLATE_PATH = "src/main/resources/com/group/univ/php-template/controller/";
-    public static String CONTROLLER_TEMPLATE_PHP_TPL = PHP_TEMPLATE_PATH + "controller.php.tpl";
+    private static final String PHP_TEMPLATE_PATH             = "src/main/resources/com/group/univ/php-template/controller/";
+    private static final String CONTROLLER_TEMPLATE_PHP_TPL   = PHP_TEMPLATE_PATH + "controller.php.tpl";
+    private static final String OUTPUT_DIR                     = "symfony/src/Controller";
 
-    // Génère les fichiers PHP pour chaque contrôleur
     public void generatePhpControllers(Map<String, Entity> entities) throws IOException {
-        File generatedDir = new File("symfony/src/Controller");
-        if (!generatedDir.exists()) {
-            generatedDir.mkdir();
-        }
+        File generatedDir = new File(OUTPUT_DIR);
+        if (!generatedDir.exists()) generatedDir.mkdirs();
+
         for (Entity entity : entities.values()) {
             String phpCode = generatePhpControllerCode(entity);
-            try (PrintWriter out = new PrintWriter(new File(generatedDir, entity.getName() + "Controller.php"))) {
-                out.print(phpCode);
+            File out = new File(generatedDir, entity.getName() + "Controller.php");
+            try (PrintWriter outWriter = new PrintWriter(out)) {
+                outWriter.print(phpCode);
             }
-            System.out.println("Fichier généré : " + entity.getName() + "Controller.php");
+            System.out.println("Controller généré : " + out.getPath());
         }
     }
 
-    // Génère le code PHP pour un contrôleur
-    public String generatePhpControllerCode(Entity entity) {
-        String template;
-        try {
-            template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(CONTROLLER_TEMPLATE_PHP_TPL)));
-        } catch (IOException e) {
-            throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
-        }
+    private String generatePhpControllerCode(Entity entity) throws IOException {
+        String template = new String(Files.readAllBytes(Paths.get(CONTROLLER_TEMPLATE_PHP_TPL)));
 
-        template = template.replace("{{ENTITY_NAME}}", entity.getName());
-        template = template.replace("{{ENTITY_NAME_LOWER}}", Utils.lcfirst(entity.getName()));
+        String name       = entity.getName();                // ex. "Client"
+        String lower      = Utils.lcfirst(name);             // ex. "client"
+        String listVar    = lower + "s";                     // ex. "clients"
 
-        return template;
+        return template
+                .replace("{{ENTITY_NAME}}", name)
+                .replace("{{ENTITY_NAME_LOWER}}", lower)
+                .replace("{{LIST_VAR}}", listVar);
     }
 }

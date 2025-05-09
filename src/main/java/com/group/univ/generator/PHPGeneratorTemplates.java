@@ -12,70 +12,65 @@ import java.util.Map;
 
 public class PHPGeneratorTemplates {
 
-    public static final String TWIG_TEMPLATE_PATH = "src/main/resources/com/group/univ/php-template/forms/";
-    public static final String TEMPLATE_CREATE_FORM = TWIG_TEMPLATE_PATH + "form-create.twig.tpl";
-    public static final String TEMPLATE_INDEX = TWIG_TEMPLATE_PATH + "form-index.twig.tpl";
+    private static final String TWIG_TPL_PATH = "src/main/resources/com/group/univ/php-template/templates/";
+    private static final String CREATE_TPL    = TWIG_TPL_PATH + "create.tpl";
+    private static final String INDEX_TPL     = TWIG_TPL_PATH + "index.tpl";
+
+    private static final String OUTPUT_DIR    = "symfony/templates";
 
     public void generateTwigTemplates(Map<String, Entity> entities) throws IOException {
-        File templatesDir = new File("symfony/templates/");
-        if (!templatesDir.exists()) {
-            templatesDir.mkdirs();
-        }
+        File baseDir = new File(OUTPUT_DIR);
+        if (!baseDir.exists()) baseDir.mkdirs();
 
-        for (Entity entity : entities.values()) {
-            String entityDirName = entity.getName().toLowerCase();
-            File entityDir = new File(templatesDir, entityDirName);
-            if (!entityDir.exists()) {
-                entityDir.mkdirs();
+        for (Entity e : entities.values()) {
+            String name    = e.getName();
+            String lc      = name.toLowerCase();
+            // Prepare the target folder, e.g. templates/client
+            File dir = new File(baseDir, lc);
+            if (!dir.exists()) dir.mkdirs();
+
+            // Build table headers and rows from XML-defined fields
+            String idField = null;
+            StringBuilder headers = new StringBuilder();
+            StringBuilder rows    = new StringBuilder();
+            for (Field f : e.getFields()) {
+                if (f.isId()) {
+                    idField = f.getName();
+                } else {
+                    headers.append("      <th>")
+                            .append(f.getName())
+                            .append("</th>\n");
+                    rows.append("      <td>{{ item.")
+                            .append(f.getName())
+                            .append(" }}</td>\n");
+                }
             }
 
-            // Page de création
-            writeTemplateToFile(entityDir, generateCreateTemplate(entity), "create.html.twig");
+            // Generate index.html.twig
+            String indexTpl = read(INDEX_TPL)
+                    .replace("%%ENTITY_NAME%%", name)
+                    .replace("%%ENTITY_NAME_LC%%", lc)
+                    .replace("%%TABLE_HEADERS%%", headers.toString().trim())
+                    .replace("%%TABLE_ROWS%%", rows.toString().trim())
+                    .replace("%%ID_FIELD%%", idField);
+            write(dir, "index.html.twig", indexTpl);
 
-            // Page d'index
-            writeTemplateToFile(entityDir, generateIndexTemplate(entity), "index.html.twig");
+            // Generate create.html.twig
+            String createTpl = read(CREATE_TPL)
+                    .replace("%%ENTITY_NAME%%", name)
+                    .replace("%%ENTITY_NAME_LC%%", lc);
+            write(dir, "create.html.twig", createTpl);
         }
     }
 
-    private void writeTemplateToFile(File dir, String content, String filename) throws IOException {
+    private String read(String path) throws IOException {
+        return new String(Files.readAllBytes(Paths.get(path)));
+    }
+
+    private void write(File dir, String filename, String content) throws IOException {
         try (PrintWriter out = new PrintWriter(new File(dir, filename))) {
             out.print(content);
         }
-        System.out.println("Fichier Twig généré : " + new File(dir, filename).getPath());
-    }
-
-    public String generateCreateTemplate(Entity entity) {
-        String template = readTemplateFile(TEMPLATE_CREATE_FORM);
-        return template
-                .replace("{{ENTITY_NAME}}", entity.getName())
-                .replace("{{ENTITY_NAME_LC}}", entity.getName().toLowerCase());
-    }
-
-    public String generateIndexTemplate(Entity entity) {
-        String template = readTemplateFile(TEMPLATE_INDEX);
-        StringBuilder headers = new StringBuilder();
-        StringBuilder rows = new StringBuilder();
-
-        for (Field field : entity.getFields()) {
-            if (!field.isId()) {
-                String fieldName = field.getName();
-                headers.append("<th>").append(fieldName).append("</th>\n");
-                rows.append("<td>{{ item.").append(fieldName).append(" }}</td>\n");
-            }
-        }
-
-        return template
-                .replace("{{ENTITY_NAME}}", entity.getName())
-                .replace("{{ENTITY_NAME_LC}}", entity.getName().toLowerCase())
-                .replace("{{TABLE_HEADERS}}", headers.toString().trim())
-                .replace("{{TABLE_ROWS}}", rows.toString().trim());
-    }
-
-    private String readTemplateFile(String path) {
-        try {
-            return new String(Files.readAllBytes(Paths.get(path)));
-        } catch (IOException e) {
-            throw new RuntimeException("Erreur lecture template : " + path + " - " + e.getMessage());
-        }
+        System.out.println("Généré : " + new File(dir, filename).getPath());
     }
 }

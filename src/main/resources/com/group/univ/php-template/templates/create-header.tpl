@@ -9,6 +9,3 @@
 {{ form_widget(form) }}
 <button class="btn">Enregistrer</button>
 {{ form_end(form) }}
-
-<a href="{{ path(ENTITY_NAME_LC ~ '_index') }}">Retour à la liste</a>
-{% endblock %}
