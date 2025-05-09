@@ -23,7 +23,7 @@ class {{ENTITY_NAME}}Controller extends AbstractController
     public function create(Request $request): Response
     {
         $entity = new {{ENTITY_NAME}}();
-        $form = $this->createForm({{ENTITY_NAME}}::class, $entity);
+        $form = $this->createForm({{ENTITY_NAME}}Type::class, $entity);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

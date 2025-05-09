@@ -17,7 +17,9 @@ public class PHPGeneratorForms {
     // Génère les fichiers de formulaire Symfony pour chaque entité
     public void generateFormFiles(Map<String, Entity> entities) throws IOException {
         File dir = new File(FORM_OUTPUT_DIR);
-
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
         for (Entity entity : entities.values()) {
             File file = new File(dir, entity.getName() + "Type.php");
             try (FileWriter writer = new FileWriter(file)) {

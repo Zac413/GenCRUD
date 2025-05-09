@@ -17,6 +17,7 @@ public class Main {
         PHPGeneratorController phpGeneratorController = new PHPGeneratorController();
         PHPGeneratorRepository phpGeneratorRepository = new PHPGeneratorRepository();
         PHPGeneratorForms phpGeneratorForms = new PHPGeneratorForms();
+        TWIGGeneratorCreate twigGeneratorCreate = new TWIGGeneratorCreate();
         try{
             Document document = xmlParser.loadXmlDocument("src/main/resources/com/group/univ/xml/schema.xml");
             Map<String, Entity> entities = xmlParser.parseEntities(document);
@@ -26,6 +27,7 @@ public class Main {
             phpGeneratorRepository.generatePhpRepositories(entities);
             phpGeneratorForms.generateFormFiles(entities);
             phpGeneratorTemplates.generateTwigTemplates(entities);
+            twigGeneratorCreate.generateTwigFiles(entities);
             System.out.println("Génération terminée avec succès !");
 
         }catch (IOException e){
