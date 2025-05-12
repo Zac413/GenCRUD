@@ -1,1 +1,1 @@
-->add('{{FIELD_NAME}}', {{FIELD_TYPE}}::class)
+        $builder->add('{{FIELD_NAME}}', {{FIELD_TYPE}}::class);

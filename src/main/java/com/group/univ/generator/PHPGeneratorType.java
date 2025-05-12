@@ -13,7 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class PHPGeneratorForms {
+public class PHPGeneratorType {
 
     private static final String FORM_TEMPLATE_PATH   = "src/main/resources/com/group/univ/php-template/forms/";
     private static final String HEADER_TPL           = FORM_TEMPLATE_PATH + "form-header.php.tpl";

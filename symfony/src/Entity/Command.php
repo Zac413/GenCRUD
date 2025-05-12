@@ -4,69 +4,108 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+use App\Entity\Client;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
+
+use App\Entity\Produit;
+
+
+#[ORM\Entity]
 class Command
 {
-    /**
-    * @ORM\Id
-    * @ORM\GeneratedValue
-    * @ORM\Column(type="integer")
-    */
-    private $co_id;
 
-    /**
-    * @ORM\Column(type="\DateTimeInterface", length=255)
-    * 
-    */
-    private $co_date;
+        #[ORM\Id]
+        #[ORM\GeneratedValue]
+        #[ORM\Column(type: 'integer')]
+        private ?int $co_id = null;
 
-    /**
-    * @ORM\Column(type="float", length=255)
-    * 
-    */
-    private $co_prix;
+        #[ORM\Column(type: 'datetime_immutable', length: 255)]
+        private ?DateTimeImmutable $co_date = null;
 
-    /**
-    * @ORM\OneToOne(targetEntity="Client")
-    * @ORM\JoinColumn(name="co_cu_id", referencedColumnName="id")
-    */
-    private $client;
 
-    /**
-    * @ORM\OneToMany(targetEntity="Produit", mappedBy="command")
-    */
-    private $produits;
+        #[ORM\Column(type: 'float', length: 255)]
+        private ?float $co_prix = null;
 
-    public function getco_id(): ?int
+
+        #[ORM\OneToOne(targetEntity: Client::class)]
+        #[ORM\JoinColumn(name: 'co_cl_id', referencedColumnName: 'cl_id')]
+        private ?Client $client = null;
+
+    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'command')]
+    private ?Collection $produits = null;
+
+    public function __construct()
+    {
+
+        $this->produits = new ArrayCollection();
+
+    }
+
+    public function getCoId(): ?int
     {
         return $this->co_id;
     }
 
-    public function setco_id(int $co_id): self
-    {
-        $this->co_id = $co_id;
-        return $this;
-    }
-    public function getco_date(): ?\DateTimeInterface
+    public function getCoDate(): ?datetime_immutable
     {
         return $this->co_date;
     }
 
-    public function setco_date(\DateTimeInterface $co_date): self
+    public function setCoDate(datetime_immutable $co_date): self
     {
         $this->co_date = $co_date;
         return $this;
     }
-    public function getco_prix(): ?float
+
+    public function getCoPrix(): ?float
     {
         return $this->co_prix;
     }
 
-    public function setco_prix(float $co_prix): self
+    public function setCoPrix(float $co_prix): self
     {
         $this->co_prix = $co_prix;
         return $this;
     }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(Client $client): self
+    {
+        $this->client = $client;
+        return $this;
+    }
+
+    public function getProduits(): ?Collection
+    {
+        return $this->produits;
+    }
+
+    public function setProduits(Collection $produits): self
+    {
+        $this->produits = $produits;
+        return $this;
+    }
+
+    public function addProduit(Produit $produit): self
+    {
+        if (!$this->produits->contains($produit))
+        {
+            $this->produits[] = $produit;
+        }
+        return $this;
+    }
+
+    public function removeProduit(Produit $produit): self
+    {
+        $this->produits->removeElement($produit);
+        return $this;
+    }
+
 }

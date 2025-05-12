@@ -4,58 +4,54 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+
+#[ORM\Entity]
 class Client
 {
-    /**
-    * @ORM\Id
-    * @ORM\GeneratedValue
-    * @ORM\Column(type="integer")
-    */
-    private $cu_id;
 
-    /**
-    * @ORM\Column(type="string", length=30)
-    * nom du client
-    */
-    private $cu_nom;
+        #[ORM\Id]
+        #[ORM\GeneratedValue]
+        #[ORM\Column(type: 'integer')]
+        private ?int $cl_id = null;
 
-    /**
-    * @ORM\Column(type="string", length=30)
-    * prénom du client
-    */
-    private $cu_prenom;
+        #[ORM\Column(type: 'string', length: 30)]
+        private ?string $cl_nom = null;
 
-    public function getcu_id(): ?int
+
+        #[ORM\Column(type: 'string', length: 30)]
+        private ?string $cl_prenom = null;
+
+
+    public function __construct()
     {
-        return $this->cu_id;
+
     }
 
-    public function setcu_id(int $cu_id): self
+    public function getClId(): ?int
     {
-        $this->cu_id = $cu_id;
+        return $this->cl_id;
+    }
+
+    public function getClNom(): ?string
+    {
+        return $this->cl_nom;
+    }
+
+    public function setClNom(string $cl_nom): self
+    {
+        $this->cl_nom = $cl_nom;
         return $this;
     }
-    public function getcu_nom(): ?string
+
+    public function getClPrenom(): ?string
     {
-        return $this->cu_nom;
+        return $this->cl_prenom;
     }
 
-    public function setcu_nom(string $cu_nom): self
+    public function setClPrenom(string $cl_prenom): self
     {
-        $this->cu_nom = $cu_nom;
+        $this->cl_prenom = $cl_prenom;
         return $this;
-    }
-    public function getcu_prenom(): ?string
-    {
-        return $this->cu_prenom;
     }
 
-    public function setcu_prenom(string $cu_prenom): self
-    {
-        $this->cu_prenom = $cu_prenom;
-        return $this;
-    }
 }
