@@ -5,8 +5,6 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 {{IMPORTS}}
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class {{CLASS_NAME}}
 {

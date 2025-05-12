@@ -16,10 +16,9 @@ public class Main {
     public static void main(String[] args) {
         XMLParser xmlParser = new XMLParser();
         PHPGeneratorEntity phpGeneratorEntity = new PHPGeneratorEntity();
-        PHPGeneratorTemplates phpGeneratorTemplates = new PHPGeneratorTemplates();
         PHPGeneratorController phpGeneratorController = new PHPGeneratorController();
         PHPGeneratorRepository phpGeneratorRepository = new PHPGeneratorRepository();
-        PHPGeneratorForms phpGeneratorForms = new PHPGeneratorForms();
+        PHPGeneratorType phpGeneratorType = new PHPGeneratorType();
         TWIGGeneratorCreate twigGeneratorCreate = new TWIGGeneratorCreate();
         TWIGGeneratorIndex twigGeneratorIndex = new TWIGGeneratorIndex();
         try{
@@ -29,8 +28,7 @@ public class Main {
             phpGeneratorEntity.generatePhpFiles(entities);
             phpGeneratorController.generatePhpControllers(entities);
             phpGeneratorRepository.generatePhpRepositories(entities);
-            phpGeneratorForms.generateFormFiles(entities);
-//            phpGeneratorTemplates.generateTwigTemplates(entities);
+            phpGeneratorType.generateFormFiles(entities);
             twigGeneratorCreate.generateTwigFiles(entities);
             twigGeneratorIndex.generateTwigFiles(entities);
             System.out.println("Génération terminée avec succès !");

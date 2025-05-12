@@ -1,9 +1,9 @@
 <orm>
   <classes>
     <class name="client">
-      <id name="cu_id"/>
-      <field name="cu_nom" type="varchar" size="30" desc="nom du client"/>
-      <field name="cu_prenom" type="varchar" size="30" desc="prénom du client"/>
+      <id name="cl_id"/>
+      <field name="cl_nom" type="varchar" size="30" desc="nom du client"/>
+      <field name="cl_prenom" type="varchar" size="30" desc="prénom du client"/>
     </class>
     <class name="command">
       <id name="co_id"/>
@@ -17,7 +17,7 @@
     </class>
   </classes>
   <relationships>
-    <relation type="one-to-one" from="command" to="client" name="co_cu_id"/>
+    <relation type="one-to-one" from="command" to="client" name="co_cl_id"/>
     <relation type="one-to-many" from="command" to="produit">
       <field name="quantite" type="float"/>
     </relation>

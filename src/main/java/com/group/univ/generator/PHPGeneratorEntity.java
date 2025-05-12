@@ -190,7 +190,8 @@ public class PHPGeneratorEntity {
                 throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
             }
             template = template.replace("{{FIELD_NAME}}", field.getName());
-            template = template.replace("{{FIELD_TYPE}}", Utils.mapType(field.getType()));
+            template = template.replace("{{FIELD_TYPE_ORM}}", Utils.mapType(field.getType()));
+            template = template.replace("{{FIELD_TYPE}}", Utils.mapTypeORM(field.getType()));
             template = template.replace("{{FIELD_SIZE}}", field.getSize());
             template = template.replace("{{FIELD_DESC}}", field.getDesc());
         }
@@ -216,6 +217,7 @@ public class PHPGeneratorEntity {
 
         template = template.replace("{{RELATION_TO}}", relation.getTo());
         template = template.replace("{{RELATION_to}}", Utils.lcfirst(relation.getTo()));
+        template = template.replace("{{TWO_FIRST_LETTER}}", Utils.lcfirst(Utils.toCamelCase(relation.getTo()).substring(0, 2)));
         template = template.replace("{{RELATION_FROM}}", relation.getFrom());
         template = template.replace("{{RELATION_NAME}}", relation.getName());
         template = template.replace("{{ENTITY_NAME}}", Utils.lcfirst(entityName));
