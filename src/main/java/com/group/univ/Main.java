@@ -8,7 +8,10 @@ import org.w3c.dom.Document;
 import java.io.IOException;
 import java.util.Map;
 
-
+/**
+ * Main class to run the application.
+ * This class is responsible for loading the XML document, parsing it, and generating the necessary files.
+ */
 public class Main {
     public static void main(String[] args) {
         XMLParser xmlParser = new XMLParser();
