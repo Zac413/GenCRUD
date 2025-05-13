@@ -20,6 +20,7 @@ public class Main {
         PHPGeneratorRepository phpGeneratorRepository = new PHPGeneratorRepository();
         PHPGeneratorType phpGeneratorType = new PHPGeneratorType();
         TWIGGeneratorCreate twigGeneratorCreate = new TWIGGeneratorCreate();
+        TWIGGeneratorIndexGlobal twigGeneratorIndexGlobal = new TWIGGeneratorIndexGlobal();
         TWIGGeneratorIndex twigGeneratorIndex = new TWIGGeneratorIndex();
         TWIGGeneratorEdit twigGeneratorEdit = new TWIGGeneratorEdit();
         try{
@@ -27,7 +28,9 @@ public class Main {
             Map<String, Entity> entities = xmlParser.parseEntities(document);
             xmlParser.parseRelations(document, entities);
             phpGeneratorEntity.generatePhpFiles(entities);
+            phpGeneratorController.generateIndexController();
             phpGeneratorController.generatePhpControllers(entities);
+            twigGeneratorIndexGlobal.generateGlobalIndex(entities);
             phpGeneratorRepository.generatePhpRepositories(entities);
             phpGeneratorType.generateFormFiles(entities);
             twigGeneratorCreate.generateTwigFiles(entities);

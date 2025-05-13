@@ -82,7 +82,7 @@ public class PHPGeneratorEntity {
             String type = "";
             String name = "";
             if(r.getType().equalsIgnoreCase("one-to-one")) {
-                type = Utils.mapType(r.getTo());
+                type = Utils.mapTypePhp(r.getTo());
                 name = r.getTo();
             } else if (r.getType().equalsIgnoreCase("one-to-many")) {
                 type = "Collection";
@@ -181,7 +181,7 @@ public class PHPGeneratorEntity {
                 throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
             }
             template = template.replace("{{FIELD_NAME}}", field.getName());
-            template = template.replace("{{FIELD_TYPE}}", Utils.mapType(field.getType()));
+            template = template.replace("{{FIELD_TYPE}}", Utils.mapTypePhp(field.getType()));
 
         }else {
             try {
@@ -204,7 +204,7 @@ public class PHPGeneratorEntity {
         try {
             if(relation.getType().equalsIgnoreCase("one-to-one")) {
                 template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_RELATION_ONETOONE_PHP_TPL)));
-                type = Utils.mapType(relation.getTo());
+                type = Utils.mapTypePhp(relation.getTo());
             } else if (relation.getType().equalsIgnoreCase("one-to-many")) {
                 template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_RELATION_ONETOMANY_PHP_TPL)));
                 type = "Collection";
@@ -236,7 +236,7 @@ public class PHPGeneratorEntity {
 
         template = template.replace("{{NAME}}", Utils.lcfirst(name));
         template = template.replace("{{NAME_CAMEL}}", Utils.toCamelCase(name));
-        template = template.replace("{{TYPE}}", Utils.mapType(type));
+        template = template.replace("{{TYPE}}", Utils.mapTypePhp(type));
         return template;
     }
 
@@ -250,7 +250,7 @@ public class PHPGeneratorEntity {
 
         template = template.replace("{{NAME}}", Utils.lcfirst(name));
         template = template.replace("{{NAME_CAMEL}}", Utils.toCamelCase(name));
-        template = template.replace("{{TYPE}}", Utils.mapType(type));
+        template = template.replace("{{TYPE}}", Utils.mapTypePhp(type));
         return template;
     }
 
@@ -265,7 +265,7 @@ public class PHPGeneratorEntity {
         template = template.replace("{{NAME}}", name);
         template = template.replace("{{name}}", Utils.lcfirst(name));
         template = template.replace("{{NAME_CAMEL}}", Utils.toCamelCase(name));
-        template = template.replace("{{TYPE}}", Utils.mapType(type));
+        template = template.replace("{{TYPE}}", Utils.mapTypePhp(type));
         return template;
     }
 

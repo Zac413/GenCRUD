@@ -2,19 +2,29 @@
 
 namespace App\Form;
 
+use App\Entity\Client;
 use App\Entity\Command;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 class CommandType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-$builder->add('coDate', DateType::class);
-        $builder->add('coPrix', NumberType::class);
-        ;
+        $builder
+            ->add('coDate', DateType::class, [
+                'widget' => 'single_text',
+            ])
+            ->add('coPrix', NumberType::class)
+            ->add('client', EntityType::class, [
+                'class' => Client::class,
+                'choice_label' => 'clNom',
+                'placeholder' => 'Choisir un client',
+            ]);
 
     }
 

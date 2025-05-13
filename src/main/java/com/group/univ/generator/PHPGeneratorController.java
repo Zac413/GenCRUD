@@ -12,10 +12,13 @@ import java.util.Map;
 
 public class PHPGeneratorController {
 
-    private static final String PHP_TEMPLATE_PATH            =
-            "src/main/resources/com/group/univ/php-template/controller/";
+    public static final String PHP_TEMPLATE_PATH = "src/main/resources/com/group/univ/php-template/";
+    public static final String TEMPLATE_CONTROLLER = PHP_TEMPLATE_PATH + "controller/";
     private static final String CONTROLLER_TEMPLATE_PHP_TPL =
-            PHP_TEMPLATE_PATH + "controller.php.tpl";
+            TEMPLATE_CONTROLLER + "controller.php.tpl";
+
+    private static final String INDEX_TEMPLATE_PHP_TPL      =
+            TEMPLATE_CONTROLLER + "index.php.tpl";
 
     private static final String OUTPUT_DIR = "symfony/src/Controller";
 
@@ -31,6 +34,18 @@ public class PHPGeneratorController {
             }
             System.out.println("Fichier généré : " + out.getName());
         }
+    }
+
+    public void generateIndexController() throws IOException {
+        File generatedDir = new File(OUTPUT_DIR);
+        if (!generatedDir.exists()) generatedDir.mkdir();
+
+        String tpl = Files.readString(Paths.get(INDEX_TEMPLATE_PHP_TPL));
+        File out = new File(generatedDir, "IndexController.php");
+        try (PrintWriter writer = new PrintWriter(out)) {
+            writer.print(tpl);
+        }
+        System.out.println("Fichier généré : IndexController.php");
     }
 
     private String generatePhpControllerCode(Entity entity) {

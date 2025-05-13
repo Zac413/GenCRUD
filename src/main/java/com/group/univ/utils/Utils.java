@@ -11,7 +11,18 @@ public class Utils {
             case "varchar": return "string";
             case "integer": return "int";
             case "float": return "float";
-            case "date": return "datetime_immutable";
+            case "date": return "datetime";
+            default: return t;
+        }
+    }
+
+    public static String mapTypePhp(String t) {
+        if (t == null) return "string";
+        switch(t.toLowerCase()) {
+            case "varchar": return "string";
+            case "integer": return "int";
+            case "float": return "float";
+            case "date": return "\\DateTime";
             default: return t;
         }
     }
@@ -22,7 +33,7 @@ public class Utils {
             case "varchar": return "string";
             case "integer": return "int";
             case "float": return "float";
-            case "date": return "DateTimeImmutable";
+            case "date": return "\\DateTime";
             default: return t;
         }
     }

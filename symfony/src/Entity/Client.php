@@ -54,4 +54,9 @@ class Client
         return $this;
     }
 
+    public function __toString(): string
+    {
+        return $this->cl_nom . ' ' . $this->cl_prenom;
+    }
+
 }

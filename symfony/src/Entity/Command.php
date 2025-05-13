@@ -22,8 +22,8 @@ class Command
         #[ORM\Column(type: 'integer')]
         private ?int $co_id = null;
 
-        #[ORM\Column(type: 'datetime_immutable', length: 255)]
-        private ?DateTimeImmutable $co_date = null;
+        #[ORM\Column(type: 'datetime', length: 255)]
+        private ?\DateTime $co_date = null;
 
 
         #[ORM\Column(type: 'float', length: 255)]
@@ -49,12 +49,12 @@ class Command
         return $this->co_id;
     }
 
-    public function getCoDate(): ?datetime_immutable
+    public function getCoDate(): ?\DateTime
     {
         return $this->co_date;
     }
 
-    public function setCoDate(datetime_immutable $co_date): self
+    public function setCoDate(\DateTime $co_date): self
     {
         $this->co_date = $co_date;
         return $this;
@@ -106,6 +106,11 @@ class Command
     {
         $this->produits->removeElement($produit);
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->co_date->format('Y-m-d H:i:s') . ' - ' . $this->client->getClNom() . ' ' . $this->client->getClPrenom();  // ou tout autre format
     }
 
 }
