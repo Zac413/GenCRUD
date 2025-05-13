@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Command{% endblock %}
+
+{% block body %}
+    <h1>Create Command</h1>
+
+    {{ form_start(form) }}
+
+        {{ form_row(form.coDate) }}
+
+        {{ form_row(form.coPrix) }}
+
+        {{ form_row(form.client) }}
+
+        {{ form_row(form.produits) }}
+
+        <button class="btn btn-success">Edit</button>
+    {{ form_end(form) }}
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} List of Command {% endblock %}
+
+{% block body %}
+<h1>List of Command</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+
+        <th>coId</th>
+
+        <th>coDate</th>
+
+        <th>coPrix</th>
+
+        <th>client</th>
+
+        <th>produits</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for command in commands %}
+        <tr>
+
+        <td>{{ command.coId  }}</td>
+
+        <td>{{ command.coDate  }}</td>
+
+        <td>{{ command.coPrix  }}</td>
+
+        <td>{{ command.client  }}</td>
+
+        <td>{{ command.produits  }}</td>
+
+
+        <td>
+            <a href="{{ path('command_edit', {id: command.coId}) }}" class="btn btn-warning btn-sm">✏️</a>
+        </td>
+
+        <td>
+            <form action="{{ path('command_delete', {id: command.coId}) }}" method="post" onsubmit="return confirm('Delete this command ?');">
+                <button class="btn btn-danger btn-sm">🗑️</button>
+            </form>
+        </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    <a href="/command/create">
+        <button type="button">Créer</button>
+    </a>
+{% endblock %}

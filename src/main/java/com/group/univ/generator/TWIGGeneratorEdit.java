@@ -10,15 +10,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
-public class TWIGGeneratorCreate {
+public class TWIGGeneratorEdit {
 
     public static final String TWIG_OUT_PATH = "symfony/templates/";
 
     public static final String TWIG_TEMPLATE_PATH = "src/main/resources/com/group/univ/twig-template/templates/";
     public static final String TEMPLATE_CREATE_FORM = TWIG_TEMPLATE_PATH + "create/";
+    public static final String TEMPLATE_EDIT_FORM = TWIG_TEMPLATE_PATH + "edit/";
 
     public static final String TEMPLATE_CREATE_HEADER_FORM = TEMPLATE_CREATE_FORM + "templates-create-header.twig.tpl";
-    public static final String TEMPLATE_CREATE_FOOTER_FORM = TEMPLATE_CREATE_FORM + "templates-create-footer.twig.tpl";
+    public static final String TEMPLATE_CREATE_FOOTER_FORM = TEMPLATE_EDIT_FORM + "templates-edit-footer.twig.tpl";
     public static final String TEMPLATE_CREATE_FIELD_FORM = TEMPLATE_CREATE_FORM + "templates-create-field.twig.tpl";
 
 
@@ -30,10 +31,10 @@ public class TWIGGeneratorCreate {
                 generatedDir.mkdir();
             }
             String twigCreateCode = generateTwigCreateCode(entity);
-            try (PrintWriter out = new PrintWriter(new File(generatedDir, "create"+".html.twig"))) {
+            try (PrintWriter out = new PrintWriter(new File(generatedDir, "edit"+".html.twig"))) {
                 out.print(twigCreateCode);
             }
-            System.out.println("Génération du fichier create-"+entity.getName() + ".html.twig");
+            System.out.println("Génération du fichier edit-"+entity.getName() + ".html.twig");
         }
 
     }
@@ -105,8 +106,12 @@ public class TWIGGeneratorCreate {
             throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
         }
 
-        template = template.replace("{{PATH}}", entity.getName().toLowerCase());
+        template = template.replace("{{PATH}}", "edit_"+entity.getName().toLowerCase());
 
         return template;
     }
+
+
+
+
 }

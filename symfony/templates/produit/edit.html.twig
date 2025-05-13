@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Produit{% endblock %}
+
+{% block body %}
+    <h1>Create Produit</h1>
+
+    {{ form_start(form) }}
+
+        {{ form_row(form.prLabel) }}
+
+        {{ form_row(form.prPrixUnitaire) }}
+
+        <button class="btn btn-success">Edit</button>
+    {{ form_end(form) }}
+
+{% endblock %}

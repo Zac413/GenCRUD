@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Client{% endblock %}
+
+{% block body %}
+    <h1>Create Client</h1>
+
+    {{ form_start(form) }}
+
+        {{ form_row(form.clNom) }}
+
+        {{ form_row(form.clPrenom) }}
+
+        <button class="btn btn-success">Edit</button>
+    {{ form_end(form) }}
+
+{% endblock %}

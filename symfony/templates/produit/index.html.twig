@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} List of Produit {% endblock %}
+
+{% block body %}
+<h1>List of Produit</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+
+        <th>prId</th>
+
+        <th>prLabel</th>
+
+        <th>prPrixUnitaire</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for produit in produits %}
+        <tr>
+
+        <td>{{ produit.prId  }}</td>
+
+        <td>{{ produit.prLabel  }}</td>
+
+        <td>{{ produit.prPrixUnitaire  }}</td>
+
+
+        <td>
+            <a href="{{ path('produit_edit', {id: produit.prId}) }}" class="btn btn-warning btn-sm">✏️</a>
+        </td>
+
+        <td>
+            <form action="{{ path('produit_delete', {id: produit.prId}) }}" method="post" onsubmit="return confirm('Delete this produit ?');">
+                <button class="btn btn-danger btn-sm">🗑️</button>
+            </form>
+        </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    <a href="/produit/create">
+        <button type="button">Créer</button>
+    </a>
+{% endblock %}

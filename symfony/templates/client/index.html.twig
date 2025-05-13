@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} List of Client {% endblock %}
+
+{% block body %}
+<h1>List of Client</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+
+        <th>clId</th>
+
+        <th>clNom</th>
+
+        <th>clPrenom</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for client in clients %}
+        <tr>
+
+        <td>{{ client.clId  }}</td>
+
+        <td>{{ client.clNom  }}</td>
+
+        <td>{{ client.clPrenom  }}</td>
+
+
+        <td>
+            <a href="{{ path('client_edit', {id: client.clId}) }}" class="btn btn-warning btn-sm">✏️</a>
+        </td>
+
+        <td>
+            <form action="{{ path('client_delete', {id: client.clId}) }}" method="post" onsubmit="return confirm('Delete this client ?');">
+                <button class="btn btn-danger btn-sm">🗑️</button>
+            </form>
+        </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    <a href="/client/create">
+        <button type="button">Créer</button>
+    </a>
+{% endblock %}

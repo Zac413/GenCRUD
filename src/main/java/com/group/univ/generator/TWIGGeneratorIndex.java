@@ -152,7 +152,8 @@ public class TWIGGeneratorIndex {
             throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
         }
 
-        template = template.replace("{{ENTITY_NAME}}", entity.getName());
+        template = template.replace("{{ENTITY_NAME_LOWER}}", Utils.lcfirst(entity.getName()));
+        template = template.replace("{{TWO_FIRST_LETTER}}", Utils.lcfirst(Utils.toCamelCase(entity.getName()).substring(0, 2)));
 
         return template;
     }
@@ -195,7 +196,7 @@ public class TWIGGeneratorIndex {
             throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
         }
 
-        template = template.replace("{{PATH}}", "index_"+entity.getName().toLowerCase());
+        template = template.replace("{{PATH}}", entity.getName().toLowerCase());
 
         return template;
     }

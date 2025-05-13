@@ -13,14 +13,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class {{ENTITY_NAME}}Controller extends AbstractController
 {
-    private EntityManagerInterface $em;
-    private {{ENTITY_NAME}}Repository $repo;
-
-    public function __construct(EntityManagerInterface $em, {{ENTITY_NAME}}Repository $repo)
-    {
-        $this->em   = $em;
-        $this->repo = $repo;
-    }
+    public function __construct(
+        private EntityManagerInterface $em,
+        private {{ENTITY_NAME}}Repository $repo
+    ) {}
 
     #[Route('/{{ENTITY_NAME_LOWER}}', name: '{{ENTITY_NAME_LOWER}}')]
     public function index(): Response
@@ -41,11 +37,46 @@ class {{ENTITY_NAME}}Controller extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($entity);
             $this->em->flush();
+
             return $this->redirectToRoute('{{ENTITY_NAME_LOWER}}');
         }
 
         return $this->render('{{ENTITY_NAME_LOWER}}/create.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/{{ENTITY_NAME_LOWER}}/edit/{id}', name: '{{ENTITY_NAME_LOWER}}_edit')]
+    public function edit(Request $request, int $id): Response
+    {
+        ${{ENTITY_NAME_LOWER}} = $this->repo->find($id);
+        if (!${{ENTITY_NAME_LOWER}}) {
+            throw $this->createNotFoundException('{{ENTITY_NAME_LOWER}} not found');
+        }
+
+        $form = $this->createForm({{ENTITY_NAME}}Type::class, ${{ENTITY_NAME_LOWER}});
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->flush();
+
+            return $this->redirectToRoute('{{ENTITY_NAME_LOWER}}');
+        }
+
+        return $this->render('{{ENTITY_NAME_LOWER}}/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/{{ENTITY_NAME_LOWER}}/delete/{id}', name: '{{ENTITY_NAME_LOWER}}_delete', methods: ['POST'])]
+    public function delete(int $id): Response
+    {
+        ${{ENTITY_NAME_LOWER}} = $this->repo->find($id);
+        if (${{ENTITY_NAME_LOWER}}) {
+            $this->em->remove(${{ENTITY_NAME_LOWER}});
+            $this->em->flush();
+        }
+
+        return $this->redirectToRoute('{{ENTITY_NAME_LOWER}}');
     }
 }
