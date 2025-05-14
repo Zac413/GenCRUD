@@ -108,9 +108,12 @@ class Command
         return $this;
     }
 
+    /**
+     * Retourne une représentation chaîne de cet objet.
+     */
     public function __toString(): string
     {
-        return $this->co_date->format('Y-m-d H:i:s') . ' - ' . $this->client->getClNom() . ' ' . $this->client->getClPrenom();  // ou tout autre format
+        return $this->co_id.' '.$this->co_date->format('Y-m-d H:i:s').' '.$this->co_prix.' '.$this->client->__toString().' '.' ';
     }
 
 }

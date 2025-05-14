@@ -23,6 +23,7 @@ public class Main {
         TWIGGeneratorIndexGlobal twigGeneratorIndexGlobal = new TWIGGeneratorIndexGlobal();
         TWIGGeneratorIndex twigGeneratorIndex = new TWIGGeneratorIndex();
         TWIGGeneratorEdit twigGeneratorEdit = new TWIGGeneratorEdit();
+        StyleGenerator styleGenerator = new StyleGenerator();
         try{
             Document document = xmlParser.loadXmlDocument("src/main/resources/com/group/univ/xml/schema.xml");
             Map<String, Entity> entities = xmlParser.parseEntities(document);
@@ -36,6 +37,9 @@ public class Main {
             twigGeneratorCreate.generateTwigFiles(entities);
             twigGeneratorIndex.generateTwigFiles(entities);
             twigGeneratorEdit.generateTwigFiles(entities);
+            styleGenerator.generateBaseTemplate();
+            styleGenerator.generateStyleCSS();
+
             System.out.println("Génération terminée avec succès !");
 
         }catch (IOException e){

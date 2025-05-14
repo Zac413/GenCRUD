@@ -2,6 +2,7 @@ package com.group.univ.generator;
 
 import com.group.univ.model.Entity;
 import com.group.univ.model.Field;
+import com.group.univ.model.Relation;
 import com.group.univ.utils.Utils;
 
 import java.io.File;
@@ -19,6 +20,8 @@ public class PHPGeneratorType {
     private static final String HEADER_TPL           = FORM_TEMPLATE_PATH + "form-header.php.tpl";
     private static final String IMPORT_TPL           = FORM_TEMPLATE_PATH + "form-type-import.php.tpl";
     private static final String FIELD_TPL            = FORM_TEMPLATE_PATH + "form-field.php.tpl";
+    private static final String RELATION_TPL         = FORM_TEMPLATE_PATH + "form-relation.php.tpl";
+    private static final String RELATION_TPL_OTM     = FORM_TEMPLATE_PATH + "form-relation-oneToMany.php.tpl";
     private static final String FOOTER_TPL           = FORM_TEMPLATE_PATH + "form-footer.php.tpl";
 
     private static final String OUTPUT_DIR = "symfony/src/Form";
@@ -57,6 +60,11 @@ public class PHPGeneratorType {
                     .append(singleImportTpl.replace("{{TYPE}}", type))
                     .append("\n");
         }
+        for(Relation relation : entity.getRelations()) {
+            imports
+                    .append("use App\\Entity\\"+relation.getTo()+";")
+                    .append("\n");
+        }
 
         // 4) Injection dans le header
         String header = headerTpl
@@ -70,6 +78,25 @@ public class PHPGeneratorType {
                 String line = Files.readString(Paths.get(FIELD_TPL))
                         .replace("{{FIELD_NAME}}", Utils.lcfirst(Utils.toCamelCase(f.getName())))
                         .replace("{{FIELD_TYPE}}", mapToFormType(f.getType()));
+                fieldsCode.append(line).append("\n");
+            }
+        }
+
+        for (Relation relation : entity.getRelations()) {
+            if (relation.getType().equalsIgnoreCase("one-to-many")) {
+                String line = Files.readString(Paths.get(RELATION_TPL_OTM))
+                        .replace("{{RELATION_CLASS}}",(relation.getTo()))
+                        .replace("{{RELATION_NAME_LOWER}}", Utils.lcfirst(Utils.toCamelCase(relation.getTo())))
+                        .replace("{{TWO_FIRST_LETTER}}", Utils.lcfirst(Utils.toCamelCase(relation.getTo()).substring(0,2)));
+
+                fieldsCode.append(line).append("\n");
+            } else if (relation.getType().equalsIgnoreCase("one-to-one")){
+                String line = Files.readString(Paths.get(RELATION_TPL))
+                        .replace("{{RELATION_NAME_LOWER}}", Utils.lcfirst(Utils.toCamelCase(relation.getTo())))
+                        .replace("{{RELATION_CLASS}}",(relation.getTo()))
+                        .replace("{{TWO_FIRST_LETTER}}", Utils.lcfirst(Utils.toCamelCase(relation.getTo()).substring(0,2)));
+
+
                 fieldsCode.append(line).append("\n");
             }
         }

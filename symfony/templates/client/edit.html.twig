@@ -10,8 +10,12 @@
         {{ form_row(form.clNom) }}
 
         {{ form_row(form.clPrenom) }}
-
+    <div class="form-buttons">
         <button class="btn btn-success">Edit</button>
+        <a href="/client">
+            <button type="button">Annuler</button>
+        </a>
+    </div>
     {{ form_end(form) }}
 
 {% endblock %}

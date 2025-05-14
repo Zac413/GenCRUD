@@ -54,4 +54,12 @@ class Produit
         return $this;
     }
 
+    /**
+     * Retourne une représentation chaîne de cet objet.
+     */
+    public function __toString(): string
+    {
+        return $this->pr_id.' '.$this->pr_label.' '.$this->pr_prix_unitaire.' '.' ';
+    }
+
 }

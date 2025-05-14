@@ -54,9 +54,12 @@ class Client
         return $this;
     }
 
+    /**
+     * Retourne une représentation chaîne de cet objet.
+     */
     public function __toString(): string
     {
-        return $this->cl_nom . ' ' . $this->cl_prenom;
+        return $this->cl_id.' '.$this->cl_nom.' '.$this->cl_prenom.' '.' ';
     }
 
 }

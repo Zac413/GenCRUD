@@ -70,7 +70,12 @@ public class TWIGGeneratorIndex {
 
         twig.append(generateIndexTBodyHeaderTwigCode(entity));
         for (Field f : entity.getFields()) {
-            twig.append(generateIndexFieldTDTwigCode(entity.getName(),f.getName()));
+            if(f.getType().equalsIgnoreCase("date")) {
+                twig.append(generateIndexFieldTDDateTwigCode(entity.getName(),f.getName()));
+            } else {
+                twig.append(generateIndexFieldTDTwigCode(entity.getName(),f.getName()));
+            }
+
         }
 
         // Create Relations
@@ -79,7 +84,7 @@ public class TWIGGeneratorIndex {
             if(r.getType().equalsIgnoreCase("one-to-one")) {
                 name = r.getTo();
             } else if (r.getType().equalsIgnoreCase("one-to-many")) {
-                name = r.getTo()+"s";
+                name = r.getTo()+"s"+"| map(p => p.toString) | join(', ')\n";
             }
             twig.append(generateIndexFieldTDTwigCode(entity.getName(),name));
         }
@@ -187,6 +192,23 @@ public class TWIGGeneratorIndex {
 
         return template;
     }
+
+    public String generateIndexFieldTDDateTwigCode(String entityName, String name){
+        String template;
+        try {
+            template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(TEMPLATE_INDEX_FIELD_TD)));
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
+        }
+
+        template = template.replace("{{LC_ENTITY_NAME}}", Utils.lcfirst(entityName));
+
+        template = template.replace("{{TD}}", Utils.lcfirst(Utils.toCamelCase(name))+"|date('d/m/Y H:i')");
+
+        return template;
+    }
+
+
 
     public String generateFooterIndexTwigCode(Entity entity) {
         String template;

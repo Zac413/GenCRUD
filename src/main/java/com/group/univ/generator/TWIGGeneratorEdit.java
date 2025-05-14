@@ -106,7 +106,7 @@ public class TWIGGeneratorEdit {
             throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
         }
 
-        template = template.replace("{{PATH}}", "edit_"+entity.getName().toLowerCase());
+        template = template.replace("{{PATH}}", entity.getName().toLowerCase());
 
         return template;
     }

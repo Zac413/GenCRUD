@@ -13,11 +13,13 @@
 
         {{ form_row(form.client) }}
 
-
+        {{ form_row(form.produits) }}
+<div class="form-buttons">
         <button class="btn btn-success">Create</button>
         <a href="/command">
             <button type="button">Annuler</button>
         </a>
+</div>
     {{ form_end(form) }}
 
 {% endblock %}

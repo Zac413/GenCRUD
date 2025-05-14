@@ -8,32 +8,38 @@ import com.group.univ.utils.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 public class PHPGeneratorEntity {
 
-    public static String PHP_TEMPLATE_PATH = "src/main/resources/com/group/univ/php-template/entity/";
-    public static String ENTITY_HEADER_PHP_TPL = PHP_TEMPLATE_PATH+"entity-header.php.tpl";
-    public static String ENTITY_HEADER_ENTITY_PHP_TPL = PHP_TEMPLATE_PATH+"entity-header-entity.php.tpl";
-    public static String ENTITY_HEADER_LIST_PHP_TPL = PHP_TEMPLATE_PATH+"entity-header-list.php.tpl";
+    public static final String PHP_TEMPLATE_PATH             = "src/main/resources/com/group/univ/php-template/entity/";
+    public static final String ENTITY_HEADER_PHP_TPL         = PHP_TEMPLATE_PATH + "entity-header.php.tpl";
+    public static final String ENTITY_HEADER_ENTITY_PHP_TPL  = PHP_TEMPLATE_PATH + "entity-header-entity.php.tpl";
+    public static final String ENTITY_HEADER_LIST_PHP_TPL    = PHP_TEMPLATE_PATH + "entity-header-list.php.tpl";
 
-    public static String ENTITY_FOOTER_PHP_TPL = PHP_TEMPLATE_PATH+"entity-footer.php.tpl";
-    public static String ENTITY_FIELD_ID_PHP_TPL = PHP_TEMPLATE_PATH+"entity-field-id.php.tpl";
-    public static String ENTITY_FIELD_PHP_TPL = PHP_TEMPLATE_PATH+"entity-field.php.tpl";
+    public static final String ENTITY_FIELD_ID_PHP_TPL       = PHP_TEMPLATE_PATH + "entity-field-id.php.tpl";
+    public static final String ENTITY_FIELD_PHP_TPL          = PHP_TEMPLATE_PATH + "entity-field.php.tpl";
 
-    public static String ENTITY_RELATION_ONETOONE_PHP_TPL = PHP_TEMPLATE_PATH+"entity-relation-OneToOne.php.tpl";
-    public static String ENTITY_RELATION_ONETOMANY_PHP_TPL = PHP_TEMPLATE_PATH+"entity-relation-OneToMany.php.tpl";
+    public static final String ENTITY_RELATION_ONETOONE_PHP_TPL  = PHP_TEMPLATE_PATH + "entity-relation-OneToOne.php.tpl";
+    public static final String ENTITY_RELATION_ONETOMANY_PHP_TPL = PHP_TEMPLATE_PATH + "entity-relation-OneToMany.php.tpl";
 
-    public static String ENTITY_GETTER_PHP_TPL = PHP_TEMPLATE_PATH+"entity-getter.php.tpl";
-    public static String ENTITY_SETTER_PHP_TPL = PHP_TEMPLATE_PATH+"entity-setter.php.tpl";
-    public static String ENTITY_LIST_ADD_REMOVE_PHP_TPL = PHP_TEMPLATE_PATH+"entity-add-remove-list.php.tpl";
+    public static final String ENTITY_CONSTRUCTOR_PHP_TPL        = PHP_TEMPLATE_PATH + "entity-constructor.php.tpl";
+    public static final String ENTITY_CONSTRUCTOR_LIST_PHP_TPL   = PHP_TEMPLATE_PATH + "entity-constructor-list.php.tpl";
+    public static final String ENTITY_CONSTRUCTOR_FOOTER_PHP_TPL = PHP_TEMPLATE_PATH + "entity-constructor-footer.php.tpl";
 
-    public static String ENTITY_CONSTRUCTOR_PHP_TPL = PHP_TEMPLATE_PATH+"entity-constructor.php.tpl";
-    public static String ENTITY_CONSTRUCTOR_FOOTER_PHP_TPL = PHP_TEMPLATE_PATH+"entity-constructor-footer.php.tpl";
-    public static String ENTITY_CONSTRUCTOR_LIST_PHP_TPL = PHP_TEMPLATE_PATH+"entity-constructor-list.php.tpl";
+    public static final String ENTITY_GETTER_PHP_TPL              = PHP_TEMPLATE_PATH + "entity-getter.php.tpl";
+    public static final String ENTITY_SETTER_PHP_TPL              = PHP_TEMPLATE_PATH + "entity-setter.php.tpl";
+    public static final String ENTITY_LIST_ADD_REMOVE_PHP_TPL     = PHP_TEMPLATE_PATH + "entity-add-remove-list.php.tpl";
 
+    public static final String ENTITY_FOOTER_PHP_TPL           = PHP_TEMPLATE_PATH + "entity-footer.php.tpl";
+    public static final String ENTITY_TOSTRING_PHP_TPL         = PHP_TEMPLATE_PATH + "entity-tostring.php.tpl";
 
-    // Génère les fichiers PHP pour chaque entité
+    /**
+     * Génère les fichiers PHP pour chaque entité.
+     */
     public void generatePhpFiles(Map<String, Entity> entities) throws IOException {
         File generatedDir = new File("symfony/src/Entity");
         if (!generatedDir.exists()) {
@@ -41,233 +47,230 @@ public class PHPGeneratorEntity {
         }
         for (Entity entity : entities.values()) {
             String phpCode = generatePhpCode(entity);
-            try (PrintWriter out = new PrintWriter(new File(generatedDir, entity.getName() + ".php"))) {
-                out.print(phpCode);
+            File out = new File(generatedDir, entity.getName() + ".php");
+            try (PrintWriter writer = new PrintWriter(out)) {
+                writer.print(phpCode);
             }
-            System.out.println("Fichier généré : " + entity.getName() + ".php");
+            System.out.println("Fichier généré : " + out.getName());
         }
     }
 
-
-
-    // Génère le code PHP pour une entité
+    /**
+     * Génère le code PHP complet pour une entité.
+     */
     public String generatePhpCode(Entity entity) {
         StringBuilder php = new StringBuilder();
-        // Header
+        // header & imports
         php.append(generateHeaderPhpCode(entity));
-
-        // Fields
-        for (Field f : entity.getFields()) {
-            php.append(generateFieldPhpCode(f));
-        }
-
-        // Relations
-        for (Relation r : entity.getRelations()) {
-            php.append(generateRelationPhpCode(r, entity.getName()));
-        }
-
-        // Constructor
+        // fields
+        entity.getFields().forEach(f -> php.append(generateFieldPhpCode(f)));
+        // relations
+        entity.getRelations().forEach(r -> php.append(generateRelationPhpCode(r, entity.getName())));
+        // constructor
         php.append(generateConstructorPhpCode(entity));
-
-        // Getters and Setters
-        for (Field f : entity.getFields()) {
+        // getters & setters
+        entity.getFields().forEach(f -> {
             php.append(generateGetterPhpCode(f.getName(), f.getType()));
-            if(!f.isId()){
+            if (!f.isId()) {
                 php.append(generateSetterPhpCode(f.getName(), f.getType()));
             }
-        }
-
-        // Getters and Setters for relations
-        for (Relation r : entity.getRelations()) {
-            String type = "";
-            String name = "";
-            if(r.getType().equalsIgnoreCase("one-to-one")) {
-                type = Utils.mapTypePhp(r.getTo());
-                name = r.getTo();
-            } else if (r.getType().equalsIgnoreCase("one-to-many")) {
-                type = "Collection";
-                name = r.getTo()+"s";
-            }
+        });
+        entity.getRelations().forEach(r -> {
+            String type = r.getType().equalsIgnoreCase("one-to-one")
+                    ? Utils.mapTypePhp(r.getTo())
+                    : "Collection";
+            String name = r.getType().equalsIgnoreCase("one-to-many")
+                    ? r.getTo() + "s"
+                    : r.getTo();
             php.append(generateGetterPhpCode(name, type));
             php.append(generateSetterPhpCode(name, type));
-            if(r.getType().equalsIgnoreCase("one-to-many")) {
+            if (r.getType().equalsIgnoreCase("one-to-many")) {
                 php.append(generateListAddRemovePhpCode(r.getTo(), type));
             }
-        }
-
-
-        // Footer
+        });
+        // toString method
+        php.append(generateToString(entity));
+        // footer
         php.append(generateFooterPhpCode());
         return php.toString();
     }
 
-
-    public String generateHeaderPhpCode(Entity entity) {
-        String template;
-        String template_list;
-        String template_entity;
+    private String generateHeaderPhpCode(Entity entity) {
         try {
-            template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_HEADER_PHP_TPL)));
-            template_list = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_HEADER_LIST_PHP_TPL)));
-            template_entity = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_HEADER_ENTITY_PHP_TPL)));
-        } catch (IOException e) {
-            throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
-        }
-        StringBuilder imports = new StringBuilder();
-        imports.append("");
-        if(entity.getRelations() != null) {
-            for (Relation relation : entity.getRelations()) {
-                if (relation.getType().equalsIgnoreCase("one-to-many")) {
-                    imports.append(template_list);
+            String tpl       = Files.readString(Paths.get(ENTITY_HEADER_PHP_TPL));
+            String tplList   = Files.readString(Paths.get(ENTITY_HEADER_LIST_PHP_TPL));
+            String tplEntity = Files.readString(Paths.get(ENTITY_HEADER_ENTITY_PHP_TPL));
+            StringBuilder imports = new StringBuilder();
+            if (entity.getRelations() != null) {
+                for (Relation r : entity.getRelations()) {
+                    if (r.getType().equalsIgnoreCase("one-to-many")) {
+                        imports.append(tplList);
+                    }
+                    imports.append(tplEntity.replace("{{RELATION_TO}}", r.getTo()));
                 }
-                imports.append(template_entity.replace("{{RELATION_TO}}", relation.getTo()));
             }
-        }
-        template = template.replace("{{IMPORTS}}", imports.toString());
-
-        template = template.replace("{{CLASS_NAME}}", entity.getName());
-        return template;
-    }
-
-    public String generateConstructorPhpCode(Entity entity) {
-        StringBuilder template = new StringBuilder();
-
-        String template_header;
-        String template_list;
-        String template_footer;
-        try {
-            template_header = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_CONSTRUCTOR_PHP_TPL)));
-            template_list = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_CONSTRUCTOR_LIST_PHP_TPL)));
-            template_footer = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_CONSTRUCTOR_FOOTER_PHP_TPL)));
+            return tpl.replace("{{IMPORTS}}", imports.toString())
+                    .replace("{{CLASS_NAME}}", entity.getName());
         } catch (IOException e) {
-            throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
+            throw new RuntimeException("Erreur lecture header template : " + e.getMessage(), e);
         }
-
-        template.append(template_header);
-
-        boolean hasManyToOne = false;
-
-        for(Relation relation: entity.getRelations()) {
-            if(relation.getType().equalsIgnoreCase("one-to-many")) {
-                template_list = template_list.replace("{{RELATION_to}}", Utils.lcfirst(relation.getTo()));
-                hasManyToOne = true;
-            }
-        }
-        if(hasManyToOne) {
-            template.append(template_list);
-        }
-
-        template.append(template_footer);
-        return template.toString();
     }
 
-    public String generateFooterPhpCode() {
-        String template;
+    private String generateFieldPhpCode(Field field) {
         try {
-            template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_FOOTER_PHP_TPL)));
-        } catch (IOException e) {
-            throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
-        }
-
-        return template;
-    }
-
-    public String generateFieldPhpCode(Field field) {
-        String template;
-        if(field.isId()) {
-            try {
-                template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_FIELD_ID_PHP_TPL)));
-            } catch (IOException e) {
-                throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
-            }
-            template = template.replace("{{FIELD_NAME}}", field.getName());
-            template = template.replace("{{FIELD_TYPE}}", Utils.mapTypePhp(field.getType()));
-
-        }else {
-            try {
-                template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_FIELD_PHP_TPL)));
-            } catch (IOException e) {
-                throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
-            }
-            template = template.replace("{{FIELD_NAME}}", field.getName());
-            template = template.replace("{{FIELD_TYPE_ORM}}", Utils.mapType(field.getType()));
-            template = template.replace("{{FIELD_TYPE}}", Utils.mapTypeORM(field.getType()));
-            template = template.replace("{{FIELD_SIZE}}", field.getSize());
-            template = template.replace("{{FIELD_DESC}}", field.getDesc());
-        }
-        return template;
-    }
-
-    public String generateRelationPhpCode(Relation relation, String entityName) {
-        String template;
-        String type;
-        try {
-            if(relation.getType().equalsIgnoreCase("one-to-one")) {
-                template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_RELATION_ONETOONE_PHP_TPL)));
-                type = Utils.mapTypePhp(relation.getTo());
-            } else if (relation.getType().equalsIgnoreCase("one-to-many")) {
-                template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_RELATION_ONETOMANY_PHP_TPL)));
-                type = "Collection";
+            String path = field.isId() ? ENTITY_FIELD_ID_PHP_TPL : ENTITY_FIELD_PHP_TPL;
+            String tpl = Files.readString(Paths.get(path));
+            if (field.isId()) {
+                return tpl.replace("{{FIELD_NAME}}", field.getName())
+                        .replace("{{FIELD_TYPE}}", Utils.mapType(field.getType()));
             } else {
-                throw new IllegalArgumentException("Type de relation non supporté : " + relation.getType());
+                return tpl.replace("{{FIELD_NAME}}", field.getName())
+                        .replace("{{FIELD_TYPE_ORM}}", Utils.mapType(field.getType()))
+                        .replace("{{FIELD_TYPE}}", Utils.mapTypePhp(field.getType()))
+                        .replace("{{FIELD_SIZE}}", field.getSize())
+                        .replace("{{FIELD_DESC}}", field.getDesc());
             }
         } catch (IOException e) {
-            throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
+            throw new RuntimeException("Erreur lecture field template : " + e.getMessage(), e);
         }
-
-        template = template.replace("{{RELATION_TO}}", relation.getTo());
-        template = template.replace("{{RELATION_to}}", Utils.lcfirst(relation.getTo()));
-        template = template.replace("{{TWO_FIRST_LETTER}}", Utils.lcfirst(Utils.toCamelCase(relation.getTo()).substring(0, 2)));
-        template = template.replace("{{RELATION_FROM}}", relation.getFrom());
-        template = template.replace("{{RELATION_NAME}}", relation.getName());
-        template = template.replace("{{ENTITY_NAME}}", Utils.lcfirst(entityName));
-        template = template.replace("{{FIELD_TYPE}}", type);
-
-        return template;
     }
 
-    public String generateGetterPhpCode(String name, String type) {
-        String template;
+    private String generateRelationPhpCode(Relation r, String entityName) {
         try {
-            template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_GETTER_PHP_TPL)));
+            String tpl, type;
+            if (r.getType().equalsIgnoreCase("one-to-one")) {
+                tpl  = Files.readString(Paths.get(ENTITY_RELATION_ONETOONE_PHP_TPL));
+                type = Utils.mapTypePhp(r.getTo());
+            } else {
+                tpl  = Files.readString(Paths.get(ENTITY_RELATION_ONETOMANY_PHP_TPL));
+                type = "Collection";
+            }
+            return tpl.replace("{{RELATION_TO}}", r.getTo())
+                    .replace("{{RELATION_to}}", Utils.lcfirst(r.getTo()))
+                    .replace("{{RELATION_FROM}}", r.getFrom())
+                    .replace("{{TWO_FIRST_LETTER}}", Utils.lcfirst(Utils.toCamelCase(r.getTo()).substring(0,2)))
+                    .replace("{{RELATION_NAME}}", r.getName())
+                    .replace("{{ENTITY_NAME}}", Utils.lcfirst(entityName))
+                    .replace("{{FIELD_TYPE}}", type);
         } catch (IOException e) {
-            throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
+            throw new RuntimeException("Erreur lecture relation template : " + e.getMessage(), e);
         }
-
-        template = template.replace("{{NAME}}", Utils.lcfirst(name));
-        template = template.replace("{{NAME_CAMEL}}", Utils.toCamelCase(name));
-        template = template.replace("{{TYPE}}", Utils.mapTypePhp(type));
-        return template;
     }
 
-    public String generateSetterPhpCode(String name, String type) {
-        String template;
+    private String generateConstructorPhpCode(Entity entity) {
         try {
-            template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_SETTER_PHP_TPL)));
+            String header = Files.readString(Paths.get(ENTITY_CONSTRUCTOR_PHP_TPL));
+            String list   = Files.readString(Paths.get(ENTITY_CONSTRUCTOR_LIST_PHP_TPL));
+            String footer = Files.readString(Paths.get(ENTITY_CONSTRUCTOR_FOOTER_PHP_TPL));
+            StringBuilder sb = new StringBuilder(header);
+            for (Relation r : entity.getRelations()) {
+                if (r.getType().equalsIgnoreCase("one-to-many")) {
+                    sb.append(list.replace("{{RELATION_to}}", Utils.lcfirst(r.getTo())));
+                    break;
+                }
+            }
+            sb.append(footer);
+            return sb.toString();
         } catch (IOException e) {
-            throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
+            throw new RuntimeException("Erreur lecture constructor template : " + e.getMessage(), e);
         }
-
-        template = template.replace("{{NAME}}", Utils.lcfirst(name));
-        template = template.replace("{{NAME_CAMEL}}", Utils.toCamelCase(name));
-        template = template.replace("{{TYPE}}", Utils.mapTypePhp(type));
-        return template;
     }
 
-    public String generateListAddRemovePhpCode(String name, String type) {
-        String template;
+    private String generateGetterPhpCode(String name, String type) {
         try {
-            template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(ENTITY_LIST_ADD_REMOVE_PHP_TPL)));
+            String tpl = Files.readString(Paths.get(ENTITY_GETTER_PHP_TPL));
+            return tpl.replace("{{NAME}}", Utils.lcfirst(name))
+                    .replace("{{NAME_CAMEL}}", Utils.toCamelCase(name))
+                    .replace("{{TYPE}}", Utils.mapTypePhp(type));
         } catch (IOException e) {
-            throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
+            throw new RuntimeException("Erreur lecture getter template : " + e.getMessage(), e);
         }
-
-        template = template.replace("{{NAME}}", name);
-        template = template.replace("{{name}}", Utils.lcfirst(name));
-        template = template.replace("{{NAME_CAMEL}}", Utils.toCamelCase(name));
-        template = template.replace("{{TYPE}}", Utils.mapTypePhp(type));
-        return template;
     }
 
+    private String generateSetterPhpCode(String name, String type) {
+        try {
+            String tpl = Files.readString(Paths.get(ENTITY_SETTER_PHP_TPL));
+            return tpl.replace("{{NAME}}", Utils.lcfirst(name))
+                    .replace("{{NAME_CAMEL}}", Utils.toCamelCase(name))
+                    .replace("{{TYPE}}", Utils.mapTypePhp(type));
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lecture setter template : " + e.getMessage(), e);
+        }
+    }
 
+    private String generateListAddRemovePhpCode(String name, String type) {
+        try {
+            String tpl = Files.readString(Paths.get(ENTITY_LIST_ADD_REMOVE_PHP_TPL));
+            return tpl.replace("{{NAME}}", name)
+                    .replace("{{name}}", Utils.lcfirst(name))
+                    .replace("{{NAME_CAMEL}}", Utils.toCamelCase(name))
+                    .replace("{{TYPE}}", Utils.mapTypePhp(type));
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lecture list add/remove template : " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Génère dynamiquement la méthode __toString() selon l'entité.
+     */
+    private String generateToString(Entity entity) {
+        try {
+            String tpl  = Files.readString(Paths.get(ENTITY_TOSTRING_PHP_TPL));
+            String expr;
+            List<Field> fields = entity.getFields();
+            StringBuilder sb = new StringBuilder();
+            for(Field field : entity.getFields()){
+                if(field.getType().equalsIgnoreCase("date")){
+                    sb.append("$this->").append(field.getName()).append("->format('Y-m-d H:i:s')").append(".' '.");
+                }else{
+                    sb.append("$this->").append(field.getName()).append(".' '.");
+                }
+
+            }
+
+            for(Relation relation : entity.getRelations()) {
+                if(relation.getType().equalsIgnoreCase("one-to-many")) {
+                    // boucler sur tout les produits
+//                    implode(', ', array_map(fn($p) => (string) $p, $this->produits->toArray()));
+
+
+                } else if(relation.getType().equalsIgnoreCase("one-to-one")){
+                    sb.append("$this->").append(Utils.lcfirst(relation.getTo())).append("->__toString()").append(".' '.");
+                }
+            }
+
+
+//            switch (entity.getName()) {
+//                case "Client":
+//                    expr = "$this->cl_nom . ' ' . $this->cl_prenom";
+//                    break;
+//                case "Command":
+//                    expr = "$this->co_date->format('Y-m-d H:i:s') . ' - ' + $this->client->__toString()";
+//                    break;
+//                case "Produit":
+//                    expr = fields.stream()
+//                            .filter(f -> Utils.mapType(f.getType()).equals("string"))
+//                            .findFirst()
+//                            .map(f -> "$this->" + f.getName())
+//                            .orElse("''");
+//                    break;
+//                default:
+//                    expr = fields.isEmpty() ? "''" : "$this->" + fields.get(0).getName();
+//            }
+            return tpl.replace("{{TOSTRING_EXPRESSION}}", sb.toString());
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur génération toString: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Lit simplement le template de footer (sans __toString).
+     */
+    private String generateFooterPhpCode() {
+        try {
+            return Files.readString(Paths.get(ENTITY_FOOTER_PHP_TPL));
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lecture footer template : " + e.getMessage(), e);
+        }
+    }
 }

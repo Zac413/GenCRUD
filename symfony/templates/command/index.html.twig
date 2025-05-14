@@ -28,12 +28,14 @@
 
         <td>{{ command.coId  }}</td>
 
-        <td>{{ command.coDate|date('d/m/Y') }}</td>
+        <td>{{ command.coDate|date('d/m/Y H:i')  }}</td>
 
         <td>{{ command.coPrix  }}</td>
 
         <td>{{ command.client  }}</td>
 
+        <td>{{ command.produits| map(p => p.toString) | join(', ')
+  }}</td>
 
 
         <td>
