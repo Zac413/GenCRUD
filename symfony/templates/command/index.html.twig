@@ -34,8 +34,18 @@
 
         <td>{{ command.client  }}</td>
 
-        <td>{{ command.produits| map(p => p.toString) | join(', ')
-  }}</td>
+        <td>
+            <ul>
+                {% for produit in command.produits %}
+                    <li>{{ produit.prLabel }} : {{ produit.prPrixUnitaire }} €</li>
+                {% else %}
+                    <li>Aucun produit</li>
+                {% endfor %}
+            </ul>
+
+        </td>
+
+
 
 
         <td>

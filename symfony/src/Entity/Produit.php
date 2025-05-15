@@ -9,7 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Produit
 {
 
-        #[ORM\Id]
+        #[ORM\ManyToOne(targetEntity: Command::class, inversedBy: 'produits')]
+        #[ORM\JoinColumn(name: 'pr_co_id', referencedColumnName: 'co_id', nullable: true)]
+        private ?Command $command = null;
+
+
+    #[ORM\Id]
         #[ORM\GeneratedValue]
         #[ORM\Column(type: 'integer')]
         private ?int $pr_id = null;
@@ -53,6 +58,18 @@ class Produit
         $this->pr_prix_unitaire = $pr_prix_unitaire;
         return $this;
     }
+
+    public function getCommand(): ?Command
+    {
+        return $this->command;
+    }
+
+    public function setCommand(?Command $command): self
+    {
+        $this->command = $command;
+        return $this;
+    }
+
 
     /**
      * Retourne une représentation chaîne de cet objet.

@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 use App\Entity\Client;
 use App\Entity\Produit;
@@ -17,23 +18,21 @@ class CommandType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-$builder->add('coDate', DateType::class);
-        $builder->add('coPrix', NumberType::class);
-        $builder->add('client', EntityType::class, [
+        $builder->add('coDate', DateType::class)
+        ->add('coPrix', NumberType::class)
+        ->add('client', EntityType::class, [
         'class' => Client::class,
         'choice_label' => 'clId',
-        'placeholder' => 'Select Client',
+        'placeholder' => 'Select Client',])
 
-        ]);
-
-        $builder->add('produits', EntityType::class, [
-        'class' => Produit::class,
-        'choice_label' => 'prId',
-        'multiple' => true,
-        'expanded' => false,
-        'placeholder' => 'Select Produit',
-        ]);
-        ;
+        ->add('produits', EntityType::class, [
+        'class'        => Produit::class,
+        'choice_label' => 'prLabel',
+        'multiple'     => true,
+        'expanded'     => false,
+        'required'     => false,
+        'placeholder'  => 'Sélectionnez des produits',
+    ]);
 
     }
 

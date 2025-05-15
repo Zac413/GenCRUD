@@ -14,10 +14,8 @@ class ProduitType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-$builder->add('prLabel', TextType::class);
+        $builder->add('prLabel', TextType::class);
         $builder->add('prPrixUnitaire', NumberType::class);
-        ;
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void

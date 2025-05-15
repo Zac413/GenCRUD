@@ -34,8 +34,9 @@ class Command
         #[ORM\JoinColumn(name: 'co_cl_id', referencedColumnName: 'cl_id')]
         private ?Client $client = null;
 
-    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'command')]
-    private ?Collection $produits = null;
+    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'command', cascade: ['persist'], orphanRemoval: true)]
+    private Collection $produits;
+
 
     public function __construct()
     {
@@ -98,6 +99,7 @@ class Command
         if (!$this->produits->contains($produit))
         {
             $this->produits[] = $produit;
+            $produit->setCommand($this);
         }
         return $this;
     }
@@ -105,6 +107,7 @@ class Command
     public function removeProduit(Produit $produit): self
     {
         $this->produits->removeElement($produit);
+        $produit->setCommand(null);
         return $this;
     }
 
