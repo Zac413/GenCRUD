@@ -86,23 +86,53 @@ background-color: #5c636a;
 color: white;
 }
 
-/* === TABLES COMPACTES === */
+/* TABLEAUX : largeur auto, centrés, compact */
 table {
 table-layout: auto;
 width: auto;
-max-width: 100%;
+max-width: 80vw;      /* Limite la largeur à 80% de la fenêtre */
+min-width: 200px;     /* Largeur minimale pour la lisibilité */
+margin-left: auto;
+margin-right: auto;
 border-collapse: collapse;
-background-color: white;
-margin: 1rem 0;
+background: #fff;
+box-shadow: 0 2px 8px rgba(0,0,0,0.03); /* Optionnel : effet de profondeur */
 }
 
-table th,
-table td {
+/* En-têtes et cellules centrés et compacts */
+th, td {
 padding: 0.4rem 0.6rem;
 border: 1px solid #dee2e6;
-text-align: left;
+text-align: center;
+vertical-align: middle;
 white-space: nowrap;
 font-size: 0.95rem;
+}
+
+/* Boutons dans les tableaux : plats, centrés, sans fond */
+td button,
+td input[type="submit"],
+td input[type="button"],
+td .btn {
+background: none;
+color: #0d6efd;
+border: none;
+padding: 0.3rem 0.6rem;
+font-size: 0.95rem;
+border-radius: 0.375rem;
+cursor: pointer;
+margin: 0 auto;
+display: block;
+box-shadow: none;
+transition: background 0.2s;
+}
+
+td button:hover,
+td input[type="submit"]:hover,
+td input[type="button"]:hover,
+td .btn:hover {
+background: #e9ecef;
+color: #0b5ed7;
 }
 
 table thead {
@@ -123,4 +153,11 @@ display: flex;
 justify-content: center;
 gap: 0.75rem;
 margin-top: 1rem;
+}
+
+.create-btn-container {
+display: flex;
+justify-content: center;
+margin-bottom: 1.5rem;
+gap: 0.75rem;
 }
