@@ -69,6 +69,8 @@ public class XMLParser {
             String name = relElem.getAttribute("name");
             Relation rel = new Relation(type, from, to, name);
 
+            //TODO si oneToMany alors le to ManyToOne
+
             // Champs de la relation (pour les tables de jointure)
             NodeList relFieldNodes = relElem.getElementsByTagName("field");
             for (int j = 0; j < relFieldNodes.getLength(); j++) {
@@ -80,6 +82,13 @@ public class XMLParser {
 
             Entity fromEntity = entities.get(from);
             if (fromEntity != null) fromEntity.getRelations().add(rel);
+
+            Entity toEntity = entities.get(to);
+            if (type.equals("one-to-many") && toEntity != null) {
+                String inverseRelName = from.toLowerCase();
+                Relation inverseRel = new Relation("many-to-one", to, from, inverseRelName);
+                toEntity.getRelations().add(inverseRel);
+            }
         }
     }
 }

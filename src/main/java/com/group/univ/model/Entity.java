@@ -33,4 +33,23 @@ public class Entity {
     public void setRelations(List<Relation> relations) {
         this.relations = relations;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Entity: ").append(name).append("\n");
+
+        sb.append("  Fields:\n");
+        for (Field field : fields) {
+            sb.append("    - ").append(field.toString()).append("\n");
+        }
+
+        sb.append("  Relations:\n");
+        for (Relation relation : relations) {
+            sb.append("    - ").append(relation.toString()).append("\n");
+        }
+
+        return sb.toString();
+    }
+
 }

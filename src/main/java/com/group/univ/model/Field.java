@@ -57,4 +57,10 @@ public class Field {
     public void setId(boolean id) {
         isId = id;
     }
+
+    @Override
+    public String toString() {
+        return (isId ? "[ID] " : "") + name + " : " + type + "(" + size + ")" + (desc.isEmpty() ? "" : " - " + desc);
+    }
+
 }

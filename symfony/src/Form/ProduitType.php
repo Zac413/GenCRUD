@@ -10,12 +10,16 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+
+use App\Entity\Command;
 class ProduitType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('prLabel', TextType::class);
+$builder->add('prLabel', TextType::class);
         $builder->add('prPrixUnitaire', NumberType::class);
+        ;
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

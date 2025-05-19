@@ -35,8 +35,7 @@ class Command
         private ?Client $client = null;
 
     #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'command', cascade: ['persist'], orphanRemoval: true)]
-    private Collection $produits;
-
+    private ?Collection $produits;
 
     public function __construct()
     {
@@ -100,6 +99,8 @@ class Command
         {
             $this->produits[] = $produit;
             $produit->setCommand($this);
+
+
         }
         return $this;
     }

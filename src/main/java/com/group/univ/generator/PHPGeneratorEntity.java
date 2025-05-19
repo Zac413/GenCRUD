@@ -25,6 +25,7 @@ public class PHPGeneratorEntity {
 
     public static final String ENTITY_RELATION_ONETOONE_PHP_TPL  = PHP_TEMPLATE_PATH + "entity-relation-OneToOne.php.tpl";
     public static final String ENTITY_RELATION_ONETOMANY_PHP_TPL = PHP_TEMPLATE_PATH + "entity-relation-OneToMany.php.tpl";
+    public static final String ENTITY_RELATION_MANYTOONE_PHP_TPL = PHP_TEMPLATE_PATH + "entity-relation-ManyToOne.php.tpl";
 
     public static final String ENTITY_CONSTRUCTOR_PHP_TPL        = PHP_TEMPLATE_PATH + "entity-constructor.php.tpl";
     public static final String ENTITY_CONSTRUCTOR_LIST_PHP_TPL   = PHP_TEMPLATE_PATH + "entity-constructor-list.php.tpl";
@@ -76,16 +77,25 @@ public class PHPGeneratorEntity {
             }
         });
         entity.getRelations().forEach(r -> {
-            String type = r.getType().equalsIgnoreCase("one-to-one")
-                    ? Utils.mapTypePhp(r.getTo())
-                    : "Collection";
-            String name = r.getType().equalsIgnoreCase("one-to-many")
-                    ? r.getTo() + "s"
-                    : r.getTo();
+            String type="";
+            String name="";
+            if(r.getType().equalsIgnoreCase("one-to-one")){
+                type = Utils.mapTypePhp(r.getTo());
+                name = r.getTo();
+            }else if(r.getType().equalsIgnoreCase("one-to-many")){
+                type = "Collection";
+                name = r.getTo()+"s";
+            }else if(r.getType().equalsIgnoreCase("many-to-one")){
+                type = Utils.mapTypePhp(r.getTo());
+                name = r.getTo();
+            }else if(r.getType().equalsIgnoreCase("many-to-many")){
+                type = Utils.mapTypePhp(r.getTo());
+                name = r.getTo()+"s";
+            }
             php.append(generateGetterPhpCode(name, type));
             php.append(generateSetterPhpCode(name, type));
             if (r.getType().equalsIgnoreCase("one-to-many")) {
-                php.append(generateListAddRemovePhpCode(r.getTo(), type));
+                php.append(generateListAddRemovePhpCode(entity.getName(),r.getTo(), type));
             }
         });
         // toString method
@@ -137,18 +147,24 @@ public class PHPGeneratorEntity {
 
     private String generateRelationPhpCode(Relation r, String entityName) {
         try {
-            String tpl, type;
+            String tpl = "", type="";
             if (r.getType().equalsIgnoreCase("one-to-one")) {
                 tpl  = Files.readString(Paths.get(ENTITY_RELATION_ONETOONE_PHP_TPL));
                 type = Utils.mapTypePhp(r.getTo());
-            } else {
+            } else if (r.getType().equalsIgnoreCase("one-to-many")) {
                 tpl  = Files.readString(Paths.get(ENTITY_RELATION_ONETOMANY_PHP_TPL));
                 type = "Collection";
+            } else if (r.getType().equalsIgnoreCase("many-to-one")) {
+                tpl  = Files.readString(Paths.get(ENTITY_RELATION_MANYTOONE_PHP_TPL));
+                type = Utils.mapTypePhp(r.getTo());
+            } else if (r.getType().equalsIgnoreCase("many-to-many")) {
+                //TODO
             }
             return tpl.replace("{{RELATION_TO}}", r.getTo())
                     .replace("{{RELATION_to}}", Utils.lcfirst(r.getTo()))
                     .replace("{{RELATION_FROM}}", r.getFrom())
                     .replace("{{TWO_FIRST_LETTER}}", Utils.lcfirst(Utils.toCamelCase(r.getTo()).substring(0,2)))
+                    .replace("{{TWO_LETTER_ENTITY}}", Utils.lcfirst(Utils.toCamelCase(entityName).substring(0,2)))
                     .replace("{{RELATION_NAME}}", r.getName())
                     .replace("{{ENTITY_NAME}}", Utils.lcfirst(entityName))
                     .replace("{{FIELD_TYPE}}", type);
@@ -198,13 +214,14 @@ public class PHPGeneratorEntity {
         }
     }
 
-    private String generateListAddRemovePhpCode(String name, String type) {
+    private String generateListAddRemovePhpCode(String className,String name, String type) {
         try {
             String tpl = Files.readString(Paths.get(ENTITY_LIST_ADD_REMOVE_PHP_TPL));
             return tpl.replace("{{NAME}}", name)
                     .replace("{{name}}", Utils.lcfirst(name))
                     .replace("{{NAME_CAMEL}}", Utils.toCamelCase(name))
-                    .replace("{{TYPE}}", Utils.mapTypePhp(type));
+                    .replace("{{TYPE}}", Utils.mapTypePhp(type))
+                    .replace("{{CLASS_NAME}}", Utils.toCamelCase(className));
         } catch (IOException e) {
             throw new RuntimeException("Erreur lecture list add/remove template : " + e.getMessage(), e);
         }
@@ -230,33 +247,16 @@ public class PHPGeneratorEntity {
 
             for(Relation relation : entity.getRelations()) {
                 if(relation.getType().equalsIgnoreCase("one-to-many")) {
-                    // boucler sur tout les produits
-//                    implode(', ', array_map(fn($p) => (string) $p, $this->produits->toArray()));
-
-
+                    //TODO
                 } else if(relation.getType().equalsIgnoreCase("one-to-one")){
                     sb.append("$this->").append(Utils.lcfirst(relation.getTo())).append("->__toString()").append(".' '.");
+                } else if(relation.getType().equalsIgnoreCase("many-to-one")) {
+                    //TODO
+                } else if(relation.getType().equalsIgnoreCase("many-to-many")) {
+                    //TODO
                 }
             }
 
-
-//            switch (entity.getName()) {
-//                case "Client":
-//                    expr = "$this->cl_nom . ' ' . $this->cl_prenom";
-//                    break;
-//                case "Command":
-//                    expr = "$this->co_date->format('Y-m-d H:i:s') . ' - ' + $this->client->__toString()";
-//                    break;
-//                case "Produit":
-//                    expr = fields.stream()
-//                            .filter(f -> Utils.mapType(f.getType()).equals("string"))
-//                            .findFirst()
-//                            .map(f -> "$this->" + f.getName())
-//                            .orElse("''");
-//                    break;
-//                default:
-//                    expr = fields.isEmpty() ? "''" : "$this->" + fields.get(0).getName();
-//            }
             return tpl.replace("{{TOSTRING_EXPRESSION}}", sb.toString());
         } catch (IOException e) {
             throw new RuntimeException("Erreur génération toString: " + e.getMessage(), e);

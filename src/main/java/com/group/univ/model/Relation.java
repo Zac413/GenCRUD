@@ -50,4 +50,22 @@ public class Relation {
     public void setFields(List<Field> fields) {
         this.fields = fields;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(type).append(" ").append(from).append(" -> ").append(to);
+        sb.append(" [name=").append(name).append("]");
+
+        if (!fields.isEmpty()) {
+            sb.append(" {fields: ");
+            for (Field f : fields) {
+                sb.append(f.toString()).append("; ");
+            }
+            sb.append("}");
+        }
+
+        return sb.toString();
+    }
+
 }

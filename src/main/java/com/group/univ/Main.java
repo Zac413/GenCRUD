@@ -28,6 +28,8 @@ public class Main {
             Document document = xmlParser.loadXmlDocument("src/main/resources/com/group/univ/xml/schema.xml");
             Map<String, Entity> entities = xmlParser.parseEntities(document);
             xmlParser.parseRelations(document, entities);
+            System.out.println(entities.toString());
+
             phpGeneratorEntity.generatePhpFiles(entities);
             phpGeneratorController.generateIndexController();
             phpGeneratorController.generatePhpControllers(entities);

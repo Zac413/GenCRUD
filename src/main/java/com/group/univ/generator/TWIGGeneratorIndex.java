@@ -20,6 +20,7 @@ public class TWIGGeneratorIndex {
     public static final String TEMPLATE_INDEX_HEADER = TEMPLATE_INDEX + "templates-index-header.twig.tpl";
     public static final String TEMPLATE_INDEX_FOOTER = TEMPLATE_INDEX + "templates-index-footer.twig.tpl";
     public static final String TEMPLATE_INDEX_FIELD_TD = TEMPLATE_INDEX + "templates-index-field-td.twig.tpl";
+    public static final String TEMPLATE_INDEX_FIELD_LIST_TD = TEMPLATE_INDEX + "templates-index-field-list-td.twig.tpl";
     public static final String TEMPLATE_INDEX_FIELD_TH = TEMPLATE_INDEX + "templates-index-field-th.twig.tpl";
     public static final String TEMPLATE_INDEX_TBODY_FOOTER = TEMPLATE_INDEX + "templates-index-tbody-footer.twig.tpl";
     public static final String TEMPLATE_INDEX_TBODY_HEADER = TEMPLATE_INDEX + "templates-index-tbody-header.twig.tpl";
@@ -61,10 +62,17 @@ public class TWIGGeneratorIndex {
             String name = "";
             if(r.getType().equalsIgnoreCase("one-to-one")) {
                 name = r.getTo();
+                twig.append(generateIndexFieldTHTwigCode(entity.getName(),name));
+
             } else if (r.getType().equalsIgnoreCase("one-to-many")) {
                 name = r.getTo()+"s";
+                twig.append(generateIndexFieldTHTwigCode(entity.getName(),name));
+
+            } else if (r.getType().equalsIgnoreCase("many-to-many")) {
+
+            } else if (r.getType().equalsIgnoreCase("many-to-one")) {
+
             }
-            twig.append(generateIndexFieldTHTwigCode(entity.getName(),name));
         }
         twig.append(generateIndexTHeadFooterTwigCode(entity));
 
@@ -83,10 +91,16 @@ public class TWIGGeneratorIndex {
             String name = "";
             if(r.getType().equalsIgnoreCase("one-to-one")) {
                 name = r.getTo();
+                twig.append(generateIndexFieldTDTwigCode(entity.getName(),name));
             } else if (r.getType().equalsIgnoreCase("one-to-many")) {
-                name = r.getTo()+"s"+"| map(p => p.toString) | join(', ')\n";
+                name = r.getTo();
+                twig.append(generateIndexFieldListTDTwigCode(entity.getName(),name));
+
+            }else if(r.getType().equalsIgnoreCase("many-to-many")) {
+
+            }else if(r.getType().equalsIgnoreCase("many-to-one")) {
+
             }
-            twig.append(generateIndexFieldTDTwigCode(entity.getName(),name));
         }
         twig.append(generateIndexTBodyFooterTwigCode(entity));
 
@@ -182,6 +196,21 @@ public class TWIGGeneratorIndex {
         String template;
         try {
             template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(TEMPLATE_INDEX_FIELD_TD)));
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
+        }
+
+        template = template.replace("{{LC_ENTITY_NAME}}", Utils.lcfirst(entityName));
+
+        template = template.replace("{{TD}}", Utils.lcfirst(Utils.toCamelCase(name)));
+
+        return template;
+    }
+
+    public String generateIndexFieldListTDTwigCode(String entityName, String name){
+        String template;
+        try {
+            template = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(TEMPLATE_INDEX_FIELD_LIST_TD)));
         } catch (IOException e) {
             throw new RuntimeException("Erreur lors de la lecture du fichier template : " + e.getMessage());
         }

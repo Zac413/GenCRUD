@@ -34,18 +34,16 @@
 
         <td>{{ command.client  }}</td>
 
-        <td>
-            <ul>
+<td>
+        <ul>
                 {% for produit in command.produits %}
-                    <li>{{ produit.prLabel }} : {{ produit.prPrixUnitaire }} €</li>
+                <li>{{ produit }}
                 {% else %}
-                    <li>Aucun produit</li>
+                <li>Any produit</li>
                 {% endfor %}
-            </ul>
+        </ul>
 
-        </td>
-
-
+</td>
 
 
         <td>
@@ -61,7 +59,12 @@
         {% endfor %}
     </tbody>
 </table>
+<div class="create-btn-container">
     <a href="/command/create">
-        <button type="button">Créer</button>
+            <button type="button">Créer</button>
+        </a>
+    <a href="/">
+        <button type="button">Revenir a l'index global</button>
     </a>
+</div>
 {% endblock %}

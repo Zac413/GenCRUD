@@ -4,17 +4,14 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use App\Entity\Command;
+
 
 #[ORM\Entity]
 class Produit
 {
 
-        #[ORM\ManyToOne(targetEntity: Command::class, inversedBy: 'produits')]
-        #[ORM\JoinColumn(name: 'pr_co_id', referencedColumnName: 'co_id', nullable: true)]
-        private ?Command $command = null;
-
-
-    #[ORM\Id]
+        #[ORM\Id]
         #[ORM\GeneratedValue]
         #[ORM\Column(type: 'integer')]
         private ?int $pr_id = null;
@@ -26,6 +23,10 @@ class Produit
         #[ORM\Column(type: 'float', length: 255)]
         private ?float $pr_prix_unitaire = null;
 
+
+    #[ORM\ManyToOne(targetEntity: Command::class, inversedBy: 'produits')]
+    #[ORM\JoinColumn(name: 'pr_co_id', referencedColumnName: 'co_id', nullable: true)]
+    private ?Command $command = null;
 
     public function __construct()
     {
@@ -64,12 +65,11 @@ class Produit
         return $this->command;
     }
 
-    public function setCommand(?Command $command): self
+    public function setCommand(Command $command): self
     {
         $this->command = $command;
         return $this;
     }
-
 
     /**
      * Retourne une représentation chaîne de cet objet.

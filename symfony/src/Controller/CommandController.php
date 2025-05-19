@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Command;
-use App\Entity\Produit;
 use App\Form\CommandType;
 use App\Repository\CommandRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,15 +31,10 @@ class CommandController extends AbstractController
     public function create(Request $request): Response
     {
         $entity = new Command();
-
-        $form = $this->createForm(CommandType::class, $entity);
+        $form   = $this->createForm(CommandType::class, $entity);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($entity->getProduits() as $produit) {
-                $produit->setCommand($entity);
-            }
-
             $this->em->persist($entity);
             $this->em->flush();
 
@@ -59,7 +53,6 @@ class CommandController extends AbstractController
         if (!$command) {
             throw $this->createNotFoundException('command not found');
         }
-        $command->getProduits()->toArray();
 
         $form = $this->createForm(CommandType::class, $command);
         $form->handleRequest($request);
@@ -87,4 +80,3 @@ class CommandController extends AbstractController
         return $this->redirectToRoute('command');
     }
 }
-

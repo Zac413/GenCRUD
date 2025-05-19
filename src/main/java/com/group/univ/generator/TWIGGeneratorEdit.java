@@ -59,10 +59,17 @@ public class TWIGGeneratorEdit {
             String name = "";
             if(r.getType().equalsIgnoreCase("one-to-one")) {
                 name = r.getTo();
+                twig.append(generateCreateFieldTwigCode(name));
+
             } else if (r.getType().equalsIgnoreCase("one-to-many")) {
                 name = r.getTo()+"s";
+                twig.append(generateCreateFieldTwigCode(name));
+
+            } else if (r.getType().equalsIgnoreCase("many-to-many")) {
+
+            } else if (r.getType().equalsIgnoreCase("many-to-one")) {
+
             }
-            twig.append(generateCreateFieldTwigCode(name));
         }
 
 
