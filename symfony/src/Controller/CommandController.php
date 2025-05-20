@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Produit;
 use App\Entity\Command;
 use App\Form\CommandType;
 use App\Repository\CommandRepository;
@@ -35,6 +36,10 @@ class CommandController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+        
+        foreach ($entity->getProduits() as $produit) {
+            $produit->setCommand($entity);
+        }
             $this->em->persist($entity);
             $this->em->flush();
 
@@ -53,6 +58,9 @@ class CommandController extends AbstractController
         if (!$command) {
             throw $this->createNotFoundException('command not found');
         }
+
+            
+    $command->getProduits()->toArray();
 
         $form = $this->createForm(CommandType::class, $command);
         $form->handleRequest($request);

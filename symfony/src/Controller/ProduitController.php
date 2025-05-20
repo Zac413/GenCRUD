@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Produit;
 use App\Form\ProduitType;
 use App\Repository\ProduitRepository;
@@ -35,6 +36,7 @@ class ProduitController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+        
             $this->em->persist($entity);
             $this->em->flush();
 
@@ -53,6 +55,8 @@ class ProduitController extends AbstractController
         if (!$produit) {
             throw $this->createNotFoundException('produit not found');
         }
+
+            
 
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);

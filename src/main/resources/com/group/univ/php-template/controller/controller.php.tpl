@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+{{IMPORT_ONETOMANY}}
 use App\Entity\{{ENTITY_NAME}};
 use App\Form\{{ENTITY_NAME}}Type;
 use App\Repository\{{ENTITY_NAME}}Repository;
@@ -35,6 +36,7 @@ class {{ENTITY_NAME}}Controller extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+        {{FOREACH_ONETOMANY}}
             $this->em->persist($entity);
             $this->em->flush();
 
@@ -53,6 +55,8 @@ class {{ENTITY_NAME}}Controller extends AbstractController
         if (!${{ENTITY_NAME_LOWER}}) {
             throw $this->createNotFoundException('{{ENTITY_NAME_LOWER}} not found');
         }
+
+            {{EDIT_ONETOMANY}}
 
         $form = $this->createForm({{ENTITY_NAME}}Type::class, ${{ENTITY_NAME_LOWER}});
         $form->handleRequest($request);

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Client;
 use App\Form\ClientType;
 use App\Repository\ClientRepository;
@@ -35,6 +36,7 @@ class ClientController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+        
             $this->em->persist($entity);
             $this->em->flush();
 
@@ -53,6 +55,8 @@ class ClientController extends AbstractController
         if (!$client) {
             throw $this->createNotFoundException('client not found');
         }
+
+            
 
         $form = $this->createForm(ClientType::class, $client);
         $form->handleRequest($request);
