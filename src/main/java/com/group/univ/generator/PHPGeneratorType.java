@@ -83,7 +83,7 @@ public class PHPGeneratorType {
         }
 
         for (Relation relation : entity.getRelations()) {
-            if (relation.getType().equalsIgnoreCase("one-to-many")) {
+            if (relation.getType().equalsIgnoreCase("one-to-many")||relation.getType().equalsIgnoreCase("many-to-many")) {
                 String line = Files.readString(Paths.get(RELATION_TPL_OTM))
                         .replace("{{RELATION_CLASS}}",(relation.getTo()))
                         .replace("{{RELATION_NAME_LOWER}}", Utils.lcfirst(Utils.toCamelCase(relation.getTo())))

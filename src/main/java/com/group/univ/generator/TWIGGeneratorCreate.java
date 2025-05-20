@@ -65,7 +65,8 @@ public class TWIGGeneratorCreate {
                 twig.append(generateCreateFieldTwigCode(name));
 
             } else if (r.getType().equalsIgnoreCase("many-to-many")) {
-
+                name = r.getTo()+"s";
+                twig.append(generateCreateFieldTwigCode(name));
             } else if (r.getType().equalsIgnoreCase("many-to-one")) {
             }
         }

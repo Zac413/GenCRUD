@@ -26,6 +26,8 @@ public class PHPGeneratorEntity {
     public static final String ENTITY_RELATION_ONETOONE_PHP_TPL  = PHP_TEMPLATE_PATH + "entity-relation-OneToOne.php.tpl";
     public static final String ENTITY_RELATION_ONETOMANY_PHP_TPL = PHP_TEMPLATE_PATH + "entity-relation-OneToMany.php.tpl";
     public static final String ENTITY_RELATION_MANYTOONE_PHP_TPL = PHP_TEMPLATE_PATH + "entity-relation-ManyToOne.php.tpl";
+    public static final String ENTITY_RELATION_MANYTOMANY_PHP_TPL = PHP_TEMPLATE_PATH + "entity-relation-ManyToMany.php.tpl";
+    public static final String ENTITY_RELATION_MANYTOMANY_hasTo_PHP_TPL = PHP_TEMPLATE_PATH + "entity-relation-ManyToMany-hasTo.php.tpl";
 
     public static final String ENTITY_CONSTRUCTOR_PHP_TPL        = PHP_TEMPLATE_PATH + "entity-constructor.php.tpl";
     public static final String ENTITY_CONSTRUCTOR_LIST_PHP_TPL   = PHP_TEMPLATE_PATH + "entity-constructor-list.php.tpl";
@@ -89,12 +91,12 @@ public class PHPGeneratorEntity {
                 type = Utils.mapTypePhp(r.getTo());
                 name = r.getTo();
             }else if(r.getType().equalsIgnoreCase("many-to-many")){
-                type = Utils.mapTypePhp(r.getTo());
+                type = "Collection";
                 name = r.getTo()+"s";
             }
             php.append(generateGetterPhpCode(name, type));
             php.append(generateSetterPhpCode(name, type));
-            if (r.getType().equalsIgnoreCase("one-to-many")) {
+            if (r.getType().equalsIgnoreCase("one-to-many")||r.getType().equalsIgnoreCase("many-to-many")) {
                 php.append(generateListAddRemovePhpCode(entity.getName(),r.getTo(), type));
             }
         });
@@ -113,7 +115,7 @@ public class PHPGeneratorEntity {
             StringBuilder imports = new StringBuilder();
             if (entity.getRelations() != null) {
                 for (Relation r : entity.getRelations()) {
-                    if (r.getType().equalsIgnoreCase("one-to-many")) {
+                    if (r.getType().equalsIgnoreCase("one-to-many")||r.getType().equalsIgnoreCase("many-to-many")) {
                         imports.append(tplList);
                     }
                     imports.append(tplEntity.replace("{{RELATION_TO}}", r.getTo()));
@@ -158,7 +160,12 @@ public class PHPGeneratorEntity {
                 tpl  = Files.readString(Paths.get(ENTITY_RELATION_MANYTOONE_PHP_TPL));
                 type = Utils.mapTypePhp(r.getTo());
             } else if (r.getType().equalsIgnoreCase("many-to-many")) {
-                //TODO
+                if (r.getHasTo()){
+                    tpl  = Files.readString(Paths.get(ENTITY_RELATION_MANYTOMANY_hasTo_PHP_TPL));
+                } else {
+                    tpl  = Files.readString(Paths.get(ENTITY_RELATION_MANYTOMANY_PHP_TPL));
+                }
+                type = "Collection";
             }
             return tpl.replace("{{RELATION_TO}}", r.getTo())
                     .replace("{{RELATION_to}}", Utils.lcfirst(r.getTo()))
@@ -180,7 +187,7 @@ public class PHPGeneratorEntity {
             String footer = Files.readString(Paths.get(ENTITY_CONSTRUCTOR_FOOTER_PHP_TPL));
             StringBuilder sb = new StringBuilder(header);
             for (Relation r : entity.getRelations()) {
-                if (r.getType().equalsIgnoreCase("one-to-many")) {
+                if (r.getType().equalsIgnoreCase("one-to-many")||r.getType().equalsIgnoreCase("many-to-many")) {
                     sb.append(list.replace("{{RELATION_to}}", Utils.lcfirst(r.getTo())));
                     break;
                 }

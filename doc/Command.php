@@ -2,13 +2,11 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 use App\Entity\Client;
-
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 
 use App\Entity\Produit;
 
@@ -22,10 +20,6 @@ class Command
         #[ORM\Column(type: 'integer')]
         private ?int $co_id = null;
 
-        #[ORM\Column(type: 'string', length: 50)]
-        private ?string $co_label = null;
-
-
         #[ORM\Column(type: 'datetime', length: 255)]
         private ?\DateTime $co_date = null;
 
@@ -38,35 +32,22 @@ class Command
         #[ORM\JoinColumn(name: 'co_cl_id', referencedColumnName: 'cl_id')]
         private ?Client $client = null;
 
-        #[ORM\ManyToMany(targetEntity: Produit::class)]
-        #[ORM\JoinTable(
-                name: 'produits_commands',
-                joinColumns: [new ORM\JoinColumn(name: 'co_id', referencedColumnName: 'co_id')],
-                inverseJoinColumns: [new ORM\JoinColumn(name: 'pr_id', referencedColumnName: 'pr_id')]
-        )]
-        private Collection $produits;
+    #[ORM\ManyToMany(targetEntity: Produit::class)]
+    #[ORM\JoinTable(
+        name: 'produits_commands',
+        joinColumns: [new ORM\JoinColumn(name: 'co_id', referencedColumnName: 'co_id')],
+        inverseJoinColumns: [new ORM\JoinColumn(name: 'pr_id', referencedColumnName: 'pr_id')]
+    )]
+    private Collection $produits;
 
     public function __construct()
     {
-
         $this->produits = new ArrayCollection();
-
     }
 
     public function getCoId(): ?int
     {
         return $this->co_id;
-    }
-
-    public function getCoLabel(): ?string
-    {
-        return $this->co_label;
-    }
-
-    public function setCoLabel(string $co_label): self
-    {
-        $this->co_label = $co_label;
-        return $this;
     }
 
     public function getCoDate(): ?\DateTime
@@ -115,12 +96,8 @@ class Command
 
     public function addProduit(Produit $produit): self
     {
-        if (!$this->produits->contains($produit))
-        {
+        if (!$this->produits->contains($produit)) {
             $this->produits[] = $produit;
-            $produit->setCommand($this);
-
-
         }
         return $this;
     }
@@ -128,7 +105,6 @@ class Command
     public function removeProduit(Produit $produit): self
     {
         $this->produits->removeElement($produit);
-        $produit->setCommand(null);
         return $this;
     }
 
@@ -137,7 +113,7 @@ class Command
      */
     public function __toString(): string
     {
-        return $this->co_id.' '.$this->co_label.' '.$this->co_date->format('Y-m-d H:i:s').' '.$this->co_prix.' '.$this->client->__toString().' '.' ';
+        return $this->co_id.' '.$this->co_date->format('Y-m-d H:i:s').' '.$this->co_prix.' '.$this->client->__toString().' '.' ';
     }
 
 }

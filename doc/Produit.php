@@ -2,11 +2,9 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
+use Doctrine\ORM\Mapping as ORM;
 
 use App\Entity\Command;
 
@@ -27,15 +25,13 @@ class Produit
         #[ORM\Column(type: 'float', length: 255)]
         private ?float $pr_prix_unitaire = null;
 
+    #[ORM\ManyToMany(targetEntity: Command::class, mappedBy: 'produits')]
+    private Collection $commands;
 
-        #[ORM\ManyToMany(targetEntity: Command::class, mappedBy: 'produits')]
-        private Collection $commands;
 
     public function __construct()
     {
-
         $this->commands = new ArrayCollection();
-
     }
 
     public function getPrId(): ?int
@@ -72,26 +68,7 @@ class Produit
 
     public function setCommands(Collection $commands): self
     {
-        $this->commands = $commands;
-        return $this;
-    }
-
-    public function addCommand(Command $command): self
-    {
-        if (!$this->commands->contains($command))
-        {
-            $this->commands[] = $command;
-            $command->setProduit($this);
-
-
-        }
-        return $this;
-    }
-
-    public function removeCommand(Command $command): self
-    {
-        $this->commands->removeElement($command);
-        $command->setProduit(null);
+        $this->$commands = $commands;
         return $this;
     }
 

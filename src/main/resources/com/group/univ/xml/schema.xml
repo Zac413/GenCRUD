@@ -7,6 +7,7 @@
     </class>
     <class name="command">
       <id name="co_id"/>
+      <field name="co_label" type="varchar" size="50"/>
       <field name="co_date" type="date"/>
       <field name="co_prix" type="float"/>
     </class>
@@ -18,7 +19,7 @@
   </classes>
   <relationships>
     <relation type="one-to-one" from="command" to="client" name="co_cl_id"/>
-    <relation type="one-to-many" from="command" to="produit">
+    <relation type="many-to-many" from="command" to="produit">
       <field name="quantite" type="float"/>
     </relation>
   </relationships>

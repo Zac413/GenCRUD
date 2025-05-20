@@ -67,9 +67,9 @@ public class TWIGGeneratorIndex {
             } else if (r.getType().equalsIgnoreCase("one-to-many")) {
                 name = r.getTo()+"s";
                 twig.append(generateIndexFieldTHTwigCode(entity.getName(),name));
-
             } else if (r.getType().equalsIgnoreCase("many-to-many")) {
-
+                name = r.getTo()+"s";
+                twig.append(generateIndexFieldTHTwigCode(entity.getName(),name));
             } else if (r.getType().equalsIgnoreCase("many-to-one")) {
 
             }
@@ -97,7 +97,8 @@ public class TWIGGeneratorIndex {
                 twig.append(generateIndexFieldListTDTwigCode(entity.getName(),name));
 
             }else if(r.getType().equalsIgnoreCase("many-to-many")) {
-
+                name = r.getTo();
+                twig.append(generateIndexFieldListTDTwigCode(entity.getName(),name));
             }else if(r.getType().equalsIgnoreCase("many-to-one")) {
 
             }

@@ -5,10 +5,15 @@ import java.util.List;
 
 public class Relation {
     String type, from, to, name;
+    boolean hasTo = false;
     List<Field> fields = new ArrayList<>();
 
     public Relation(String type, String from, String to, String name) {
         this.type = type; this.from = from; this.to = to; this.name = name;
+    }
+
+    public Relation(String type, String from, String to, String name, boolean hasTo) {
+        this.type = type; this.from = from; this.to = to; this.name = name; this.hasTo = hasTo;
     }
 
     public String getType() {
@@ -50,6 +55,11 @@ public class Relation {
     public void setFields(List<Field> fields) {
         this.fields = fields;
     }
+
+    public boolean getHasTo() { return hasTo; }
+
+    public void setHasTo(boolean hasTo) { this.hasTo = hasTo; }
+
 
     @Override
     public String toString() {

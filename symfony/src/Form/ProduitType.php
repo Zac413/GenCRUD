@@ -18,6 +18,14 @@ class ProduitType extends AbstractType
     {
 $builder->add('prLabel', TextType::class);
         $builder->add('prPrixUnitaire', NumberType::class);
+        $builder->add('commands', EntityType::class, [
+        'class' => Command::class,
+        'choice_label' => 'coLabel',
+        'multiple' => true,
+        'expanded' => false,
+        'required'     => false,
+        'placeholder' => 'Select Command',
+        ]);
         ;
 
     }
