@@ -88,6 +88,11 @@ public class XMLParser {
                 Relation inverseRel = new Relation("many-to-one", to, from, inverseRelName);
                 toEntity.getRelations().add(inverseRel);
             }
+            if (type.equals("many-to-one") && toEntity != null) {
+                String inverseRelName = from.toLowerCase();
+                Relation inverseRel = new Relation("one-to-many", to, from, inverseRelName);
+                toEntity.getRelations().add(inverseRel);
+            }
             if (type.equals("many-to-many") && toEntity != null) {
                 String inverseRelName = from.toLowerCase();
                 Relation inverseRel = new Relation("many-to-many", to, from, inverseRelName, true);

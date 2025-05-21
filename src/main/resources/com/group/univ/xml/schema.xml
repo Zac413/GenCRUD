@@ -2,8 +2,8 @@
   <classes>
     <class name="client">
       <id name="cl_id"/>
+      <field name="cl_label" type="varchar" size="30" desc="prenom du client"/>
       <field name="cl_nom" type="varchar" size="30" desc="nom du client"/>
-      <field name="cl_prenom" type="varchar" size="30" desc="prénom du client"/>
     </class>
     <class name="command">
       <id name="co_id"/>

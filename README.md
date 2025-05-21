@@ -16,6 +16,8 @@ Ce projet Symfony permet de générer automatiquement des entités, contrôleurs
 
     Java (pour le générateur de code)
 
+    ⚠️ Veillez à renseigner le champ label dans le fichier XML (<field name="pr_label")
+
 🚀 Lancement du projet
 1. Cloner le dépôt
 
@@ -41,9 +43,12 @@ DB_PASSWORD=<mot_de_passe>
 
 Assurez-vous d’être dans le dossier projet/symfony, puis lancez :
 
-php bin/console doctrine:database:create
+```bash
+    php bin/console doctrine:database:create
+  
+    make init-db
+```
 
-make init-db
 
 Ce raccourci Makefile exécute les actions suivantes :
 
@@ -59,7 +64,11 @@ Ce raccourci Makefile exécute les actions suivantes :
 
 Vous pouvez supprimer complètement la base de données avec la commande :
 
+```bash
 php bin/console doctrine:database:drop --force
+php bin/console doctrine:database:create
+make init-db  
+```
 
 ▶️ Lancer le serveur Symfony
 

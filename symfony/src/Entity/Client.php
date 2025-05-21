@@ -15,11 +15,11 @@ class Client
         private ?int $cl_id = null;
 
         #[ORM\Column(type: 'string', length: 30)]
-        private ?string $cl_nom = null;
+        private ?string $cl_label = null;
 
 
         #[ORM\Column(type: 'string', length: 30)]
-        private ?string $cl_prenom = null;
+        private ?string $cl_nom = null;
 
 
     public function __construct()
@@ -30,6 +30,17 @@ class Client
     public function getClId(): ?int
     {
         return $this->cl_id;
+    }
+
+    public function getClLabel(): ?string
+    {
+        return $this->cl_label;
+    }
+
+    public function setClLabel(string $cl_label): self
+    {
+        $this->cl_label = $cl_label;
+        return $this;
     }
 
     public function getClNom(): ?string
@@ -43,23 +54,12 @@ class Client
         return $this;
     }
 
-    public function getClPrenom(): ?string
-    {
-        return $this->cl_prenom;
-    }
-
-    public function setClPrenom(string $cl_prenom): self
-    {
-        $this->cl_prenom = $cl_prenom;
-        return $this;
-    }
-
     /**
      * Retourne une représentation chaîne de cet objet.
      */
     public function __toString(): string
     {
-        return $this->cl_id.' '.$this->cl_nom.' '.$this->cl_prenom.' '.' ';
+        return $this->cl_id.' '.$this->cl_label.' '.$this->cl_nom.' '.' ';
     }
 
 }

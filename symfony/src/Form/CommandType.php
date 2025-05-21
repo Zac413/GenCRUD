@@ -24,7 +24,7 @@ $builder->add('coLabel', TextType::class);
         $builder->add('coPrix', NumberType::class);
         $builder->add('client', EntityType::class, [
         'class' => Client::class,
-        'choice_label' => 'clId',
+        'choice_label' => 'clLabel',
         'placeholder' => 'Select Client',
 
         ]);
