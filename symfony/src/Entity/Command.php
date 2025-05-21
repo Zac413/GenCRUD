@@ -118,7 +118,6 @@ class Command
         if (!$this->produits->contains($produit))
         {
             $this->produits[] = $produit;
-            $produit->setCommand($this);
 
 
         }
@@ -128,7 +127,6 @@ class Command
     public function removeProduit(Produit $produit): self
     {
         $this->produits->removeElement($produit);
-        $produit->setCommand(null);
         return $this;
     }
 
